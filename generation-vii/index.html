@@ -1,0 +1,217 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Generation VII | Nir Rozen</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f9;color:#162338;font:18px/1.72 system-ui,-apple-system,sans-serif}main{max-width:920px;margin:0 auto;background:white;padding:48px 65px 75px}img{width:100%;height:auto;display:block;border-radius:7px;margin:24px 0 10px}h1{font-size:2.25rem;letter-spacing:-.035em;line-height:1.12;margin:34px 0 12px;color:#102138}h2{font-size:1.55rem;line-height:1.25;letter-spacing:-.025em;margin:42px 0 15px;color:#102138}p{margin:0 0 17px}a{color:#14685f;overflow-wrap:anywhere}code{font-size:.88em;background:#edf1f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;font-size:.86em;margin:22px 0 26px}th,td{border-bottom:1px solid #dbe3ec;text-align:left;vertical-align:top;padding:12px 13px}th{background:#eef5f6;color:#153d3b}em{color:#58677c}strong{color:#142a3d}tr:nth-child(even){background:#f8fafc} @media(max-width:650px){main{padding:22px}body{font-size:16px}h1{font-size:1.9rem}th,td{padding:7px;overflow-wrap:anywhere}}</style></head><body><main><nav aria-label="Publication"><a href="../">Articles</a> · <a href="#experiments">Experiments</a> · <a href="article.md">Markdown</a></nav><img src="figures/00-cover.png" alt="Generation VII: Autonomous Computational Engineering cover"><h1>Generation VII: Autonomous Computational Engineering</h1>
+<p><em>Beyond AI-written code: Toward a machine-native architecture for governed, verified and continuously evolving software.</em></p>
+<p>By Nir Rozen</p>
+<p>Much of the conversation about AI and software engineering revolves around a familiar question: how much of a developer's work can an agent do?</p>
+<p>I find another question more interesting. If agents eventually become the primary producers and maintainers of software, would we still design the engineering environment around source files, editors, pull requests and human-readable programming languages?</p>
+<p>My background in systems, performance, scale and quality engineering has taught me to distinguish the ability to produce a change from the ability to establish that the change is safe. Those are different engineering problems. The faster we solve the first, the more important the second becomes.</p>
+<p>I want to explore what software engineering could look like if autonomous machines, rather than human developers, were its principal operators. I call this proposed framework Generation VII, or Autonomous Computational Engineering (ACE).</p>
+<p>This is a personal technical perspective and a research proposal, not an assertion that the industry has entered a new generation or that the underlying ideas are all original.</p>
+<h2>1. From coding autonomy to engineering autonomy</h2>
+<p>I distinguish three stages in the possible evolution of AI-driven software development:</p>
+<table>
+<thead>
+<tr>
+  <th>Stage</th>
+  <th>What changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Generation V: AI-assisted programming</td>
+  <td>Agents write and maintain conventional source code.</td>
+</tr>
+<tr>
+  <td>Generation VI: AI-native programming</td>
+  <td>Agents synthesize implementations from explicit semantic specifications.</td>
+</tr>
+<tr>
+  <td>Generation VII: Autonomous Computational Engineering</td>
+  <td>Agents continuously evolve computational systems within independently enforced behavioral, security and operational constraints.</td>
+</tr>
+</tbody>
+</table>
+<p>These labels are my own conceptual classification. The important distinction is not the numbering. It is the difference between automating implementation and automating the engineering decisions that govern it.</p>
+<p>There is considerable prior work. Autonomic computing introduced self-management against high-level objectives in 2003 (<a href="https://doi.org/10.1109/MC.2003.1160055">Autonomic computing</a>). Model-driven engineering, program synthesis, dynamic software updating and self-adaptive systems have been studying related problems for decades (<a href="https://drum.lib.umd.edu/items/e0d14543-3cd2-4096-b1d9-0f7ffc3ae2ff">Dynamic software updates</a>, <a href="https://doi.org/10.1016/j.jss.2025.112508">Model transformation and property preservation</a>). More recent work on autonomous software development, verification agents and semantic artifacts goes directly to the question of what happens when source code is no longer the primary artifact (<a href="https://rdi.berkeley.edu/assets/position-auto-sd.pdf">Autonomous software development</a>, <a href="https://arxiv.org/abs/2611.02285">Verification agents</a>, <a href="https://arxiv.org/abs/2611.23249">Semantic artifacts</a>). StrongDM describes an industrial software factory driven by specifications and externally maintained evaluation scenarios (<a href="https://factory.strongdm.ai/">StrongDM’s software factory</a>). SysMARA makes architectural constraints accessible to agents through an explicit system graph (<a href="https://doi.org/10.66308/air.e2026043">AI-readable architecture</a>).</p>
+<p>These efforts are important precisely because they show that the general vision is not new. My interest is in an engineering problem that remains open at scale: how to govern changes to software, its execution environment, its specifications and the evidence supporting its operation as parts of one coherent process. A recent systematic review of formal verification under microservice evolution identifies related gaps in keeping verification artifacts aligned with changing systems (<a href="https://doi.org/10.3390/software5030032">Formal verification under microservice evolution</a>).</p>
+<h2>2. What would become the source of truth?</h2>
+<p>A source repository tells us how software is implemented. It does not necessarily tell us which aspects of that implementation are intentional, which are accidental, and what must remain true when the system changes.</p>
+<p>I would make those distinctions explicit in a versioned semantic model. I use the term Semantic Computational Graph (SCG) for a representation connecting operations, types, contracts, state transitions, dependencies, permitted effects, environmental assumptions and assurance evidence.</p>
+<p><img src="figures/01-semantic-model.png" alt="Figure 1. A semantic model authorizes multiple implementations." /></p>
+<p><em>Figure 1. A behavioral contract can have multiple implementations.</em></p>
+<p>The graph need not be a universal language. It could connect several specialized representations: typed compiler IRs for computation, transition systems for concurrency, logical formulas for contracts and explicit topology models for infrastructure. MLIR already demonstrates the value of manipulating computational representations independently of their textual syntax (<a href="https://mlir.llvm.org/docs/LangRef/">MLIR</a>).</p>
+<p>Agents would query this model and propose structured changes. Source code would remain useful for interoperability, debugging and compilation, but it would no longer have to be the authoritative development interface.</p>
+<p>This does not mean eliminating abstraction, modularity or readable representations. Machines also face context limits, search complexity and computational costs. Good abstractions remain useful; they simply need not be designed around human readability alone.</p>
+<h2>3. Governing what software is allowed to become</h2>
+<p>Operating systems and security mechanisms govern what running programs may do. I would like to apply a similarly explicit discipline to what programs may become.</p>
+<p>The authoritative state of an ACE-managed system includes its semantic model, approved implementation artifacts, relevant infrastructure configuration, assumptions, assurance evidence and governing policy. Changes are proposed as transactions against an identified revision, rather than accepted simply because an agent has produced a plausible patch.</p>
+<p>Each transaction identifies what it changes, what it must preserve, the dependencies and assumptions on which it relies, the evidence required, and the authority that permits it.</p>
+<p>The platform should classify the change from its actual semantic effects, not trust an agent's label. Consider five illustrative classes:</p>
+<table>
+<thead>
+<tr>
+  <th>Change class</th>
+  <th>Example</th>
+  <th>Required checks and authority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Implementation</td>
+  <td>Replace a resource-admission predicate</td>
+  <td>Contract preservation and resource constraints; delegated implementation authority</td>
+</tr>
+<tr>
+  <td>Architecture or infrastructure</td>
+  <td>Increase the number of concurrent writers</td>
+  <td>Cross-component invariants, compatibility and environment assumptions</td>
+</tr>
+<tr>
+  <td>Persistent state</td>
+  <td>Change a database schema</td>
+  <td>Migration correctness, mixed-version compatibility and recovery or compensation</td>
+</tr>
+<tr>
+  <td>Specification</td>
+  <td>Change a project's authorization behavior</td>
+  <td>Explicit authority to alter intent and reassessment of affected obligations</td>
+</tr>
+<tr>
+  <td>Governance</td>
+  <td>Change a mandatory security or verification rule</td>
+  <td>Separately protected policy authority, independent review or its authorized equivalent</td>
+</tr>
+</tbody>
+</table>
+<p>A proposal can have several effects and must satisfy all applicable obligations. A performance optimization cannot silently become a change to business requirements. A schema migration cannot be treated like a stateless binary replacement.</p>
+<p>I refer to the protected policy that defines these rules as the Computational Constitution. The term is not meant to suggest a new formalism. It describes a set of machine-enforced boundaries: which changes may be made, by whom, under what evidence requirements, and which rules ordinary implementation agents cannot modify.</p>
+<p><img src="figures/02-control-loop.png" alt="Figure 2. Synthesis and verification are separated from deployment authority." /></p>
+<p><em>Figure 2. The engineering control plane proposes and evaluates changes; protected controls authorize them.</em></p>
+<p>A transaction may advance the authoritative revision only if the required evidence is applicable and the base revision is still current, or the proposal has been safely rebased and revalidated. The controller must also check authorization when admitting the exact artifact and configuration to production. Deployment itself is a distributed process with intermediate states, not an atomic database commit. It needs its own compatibility and recovery rules.</p>
+<p>The aim is not universal mathematical proof. It is to make the obligations, evidence, uncertainty and authority behind each change explicit and enforceable.</p>
+<h2 id="experiments">4. Two small experiments: from a correct operation to a correct evolution</h2>
+<p>To make the discussion less abstract, I used AI assistance to prepare two reproducible experiments.</p>
+<p>The first concerns a resource-admission predicate. Given unsigned 64-bit values for used capacity, requested capacity and total capacity, the mathematical sum of the first two must not exceed the third.</p>
+<p>The obvious implementation, <code>used + requested &lt;= capacity</code>, can incorrectly accept a request if unsigned addition wraps. An alternative, <code>used &lt;= capacity &amp;&amp; requested &lt;= capacity - used</code>, avoids that problem.</p>
+<p>The accompanying SMT-LIB model uses a 65-bit reference sum and Z3 4.13.3. The solver returned SAT for the query asking whether the wrapping implementation disagrees with the contract, and UNSAT for the guarded alternative. One counterexample is used = 2^64 - 3, requested = 3 and capacity = 2^64 - 2. The mathematical contract rejects the request; the wrapping sum is zero and the first candidate accepts it.</p>
+<p><img src="figures/03-verification-example.png" alt="Figure 3. Solver results for the 64-bit admission predicate." /></p>
+<p><em>Figure 3. Equivalence checking within the specified bit-vector model.</em></p>
+<p>This establishes the guarded predicate's equivalence to the modeled contract, not the correctness of a scheduler, compiled binary or concurrent reservation protocol.</p>
+<p>The second experiment asks a more interesting question for Generation VII. Suppose a scheduler has one worker and an atomic reservation operation. Agent A proposes a faster-looking implementation that separates reading available capacity from recording a reservation. Under the single-worker assumption, those actions cannot interleave with another request. Agent B independently proposes increasing the number of workers from one to two. With the original atomic operation, that is safe in the model.</p>
+<p>What happens if the two changes are combined?</p>
+<p>I explored the reachable states of a deliberately small Python model with capacity for one reservation and two unit requests. Its invariant is that accepted reservations must not exceed capacity and must equal recorded usage.</p>
+<table>
+<thead>
+<tr>
+  <th>Configuration</th>
+  <th style="text-align:right">Reachable states</th>
+  <th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Original: atomic operation, one worker</td>
+  <td style="text-align:right">4</td>
+  <td>No violation found</td>
+</tr>
+<tr>
+  <td>A: split read/write, one worker</td>
+  <td style="text-align:right">6</td>
+  <td>No violation found</td>
+</tr>
+<tr>
+  <td>B: atomic operation, two workers</td>
+  <td style="text-align:right">4</td>
+  <td>No violation found</td>
+</tr>
+<tr>
+  <td>A + B: split read/write, two workers</td>
+  <td style="text-align:right">10</td>
+  <td>Violation found</td>
+</tr>
+</tbody>
+</table>
+<p><img src="figures/04-cross-layer-evolution.png" alt="Figure 4. Individually admissible changes can be incompatible." /></p>
+<p><em>Figure 4. Actual results from exhaustive exploration of the small reservation model.</em></p>
+<p>In the combined configuration, both requests observe available capacity before either records its reservation. Both are then accepted, even though recorded usage is one.</p>
+<p>This is a familiar lost-update problem, not a novel concurrency discovery. The engineering point is that software verification and infrastructure validation cannot always be treated as independent approval processes. The evidence for change A depends on an environmental property that change B invalidates.</p>
+<p>A correctly designed evolution controller should refuse to reuse that evidence in the combined state. It should recheck the affected obligations before authorization. If it cannot establish the relevant guarantee, it should reject or defer the change.</p>
+<p><a href="experiments/">Reproduce both experiments</a> or <a href="https://github.com/MrQuality/articles/tree/main/generation-vii/experiments">inspect the source and results on GitHub</a>.</p>
+<p>Both experiments are small, executable illustrations. They do not demonstrate that the proposed platform exists, that the split implementation is faster, or that the approach scales. The code and recorded results accompany the article.</p>
+<h2>5. Assurance must evolve with the system</h2>
+<p>Passing CI at one point in time does not mean a system remains acceptable indefinitely. Dependencies change, workload assumptions become obsolete, configurations drift and vulnerabilities are disclosed.</p>
+<p>Research such as ENTRUST already recognizes that assurance cases for self-adaptive software must evolve alongside the system (<a href="https://doi.org/10.1109/TSE.2017.2738640">ENTRUST</a>). I would extend that principle into the proposed engineering protocol.</p>
+<p>Each evidence item should identify its claim, the artifact and specification versions it covers, its dependencies and assumptions, the verification method, the result and the applicable policy. A proof is not the same as a bounded model-checking result, a test, a benchmark or a signed attestation. The platform should preserve those differences rather than reduce everything to a single green checkmark.</p>
+<p>An assumption change should invalidate the applicability of dependent evidence, not necessarily the underlying mathematical theorem. For example, a proof for a single-writer scheduler remains a valid proof under its assumptions, but ceases to justify a deployment with two writers.</p>
+<p>I would treat this as an assurance dependency graph. Its purpose is to determine what must be reassessed when a change occurs and, when appropriate, restrict or suspend affected capabilities until the required assurance is restored. That response must be risk-dependent: abruptly shutting down an essential service can create a greater hazard than operating in a degraded mode.</p>
+<p>Incremental checking, counterexample reuse and dependency-aware caching could make this practical. But safe composition of evidence is a research problem in its own right. Two independently acceptable changes do not necessarily form an acceptable combination.</p>
+<h2>6. What changes in AI and cloud infrastructure?</h2>
+<p>Today, much AI infrastructure is designed around model training, inference and agent execution. Autonomous engineering would add another class of workloads: large-scale candidate generation, compilation, theorem proving, simulation, fuzzing, fault injection, benchmarking and continuous evaluation.</p>
+<p>These have very different resource requirements. GPUs or other accelerators may support model inference, while many solvers and builds need CPU time and memory. Distributed-system simulation may benefit from deterministic replay; benchmarking may need isolated, representative hardware. Some verification jobs may run much longer than the inference that produced the candidate.</p>
+<p>An ACE control plane would therefore need a heterogeneous job scheduler, durable task execution, isolated ephemeral environments, content-addressed artifact and evidence storage, and explicit compute budgets. It should reserve verification capacity so a flood of generated candidates cannot starve the mechanisms that assess them. Shared caches must be keyed by relevant inputs and trust boundaries, not simply by the candidate's name.</p>
+<p>There is already work on durable distributed agent runtimes and hardware-isolated agent execution (<a href="https://cloud.google.com/blog/products/ai-machine-learning/agent-executor-googles-distributed-agent-runtime">Google Cloud’s distributed agent runtime</a>). Existing Kubernetes infrastructure, microVMs, WebAssembly sandboxes, remote build systems and observability tools are plausible building blocks. The challenge is to arrange them around engineering obligations rather than model throughput alone.</p>
+<p>I also see an opportunity for software and infrastructure to evolve together. An agent might propose a different data representation, execution target, memory layout or deployment topology, rather than optimize an algorithm in isolation. Google DeepMind's AlphaEvolve provides a concrete precedent for AI-discovered improvements to infrastructure and hardware design (<a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/">AlphaEvolve</a>).</p>
+<p>The interesting question is how to authorize such co-evolution without losing the assumptions that make each layer correct. The scheduler experiment illustrates exactly why that matters.</p>
+<h2>7. Security: protect the ability to change the system</h2>
+<p>Autonomy does not reduce the need for cybersecurity. It expands the number of ways a system can be compromised.</p>
+<p>An engineering agent may consume untrusted documentation, dependency metadata, telemetry or test output. It may encounter indirect prompt injection, compromised tools or poisoned feedback. An adversary may not need to exploit the running application if they can convince the engineering platform to install a malicious successor.</p>
+<p>I would design the engineering control plane so generation workers cannot access production credentials, sign release authorization, overwrite acceptance criteria or modify protected policy. Each worker needs a scoped identity, short-lived capabilities, restricted network access, resource quotas and isolation appropriate to the threat model. NIST's work on agentic identity and existing software supply-chain security frameworks offer useful starting points (<a href="https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation">NIST’s agentic identity work</a>, <a href="https://in-toto.github.io/in-toto.html">in-toto and SLSA</a>, <a href="https://theupdateframework.github.io/specification/latest/">The Update Framework</a>).</p>
+<p>Candidate execution should be isolated from trusted verification and release infrastructure. Independent verifiers must bind their evidence to the exact candidate, specification, environment and toolchain. A protected deployment authority must validate signatures, current policy, revocation status and the intended execution target. A valid signature establishes provenance under a trust model; it does not establish correctness.</p>
+<p>There are additional challenges. An agent might overfit a benchmark, weaken a test or exploit a gap in a verifier. A compromised dependency could invalidate earlier assumptions. A malicious agent might deliberately exhaust verification resources. An old but properly signed artifact might no longer be safe to deploy. These scenarios require protected evaluations, evidence freshness rules, replay protection, admission checks and incident recovery.</p>
+<p>The central security objective is to constrain the consequences of a compromised generator. A model should never gain deployment privileges merely because it generated an explanation of why a change is safe.</p>
+<h2>8. Quality engineering and the economics of autonomy</h2>
+<p>From my perspective, this is where quality engineering becomes particularly important. If generating implementations gets cheaper, establishing trustworthy behavior does not automatically become cheaper as well.</p>
+<p>The engineering platform needs multiple forms of assurance according to risk. Formal methods can establish precise properties of appropriately modeled components. Property-based testing, mutation testing, differential testing, fuzzing, deterministic simulation and chaos engineering can expose weaknesses elsewhere. Protected holdout workloads help detect optimization against misleading metrics. None of these mechanisms alone establishes universal correctness.</p>
+<p>The economic question changes too. A platform may generate thousands of candidates, but evaluating all of them may cost more than the improvement is worth. The scheduler must account for inference, proof search, testing, infrastructure usage, rollout risk and the lifetime benefit of a proposed change.</p>
+<p>I would measure success by verified improvements per unit of engineering cost, escaped violations, valid evidence coverage, reproducibility, rejected unsafe transitions and recovery time. I would compare those measurements against conventional agent-driven development with strong CI and the same acceptance criteria. Otherwise, we risk comparing an ambitious architecture against a deliberately weak baseline.</p>
+<p>Optimization needs a stopping condition. Sometimes the correct decision is to retain the current implementation. A system that continuously changes software is not necessarily better than one that knows when to leave it alone.</p>
+<h2>9. Can the engineering platform improve itself?</h2>
+<p>A natural extension is for agents to optimize the infrastructure and tooling they use to engineer other systems. They could propose more efficient search algorithms, better resource scheduling, improved compiler passes or more effective verification strategies.</p>
+<p>That introduces a recursive trust problem. If the platform can change the mechanisms that decide whether its own changes are safe, it cannot also be the sole authority approving those modifications.</p>
+<p>I would keep a deliberately small trusted computing base: policy enforcement, artifact identity, critical validation and admission mechanisms, together with their dependencies. Ordinary agents could propose changes to those components, but a separately authorized process would decide whether to accept them. Its evidence requirements must be anchored outside the authority of the proposing agent. A replacement verifier should be evaluated against the previously authorized trust criteria, not criteria it has written for itself.</p>
+<p>This does not require every engineering decision to involve a human. It requires independent authority. Human intervention may be reserved for intent changes, unresolved risk, conflicting requirements and exceptional decisions, according to policy. Autonomy should be an engineering property with explicit limits, rather than a claim that no human ever needs to be involved.</p>
+<h2>10. How I would build and evaluate it</h2>
+<p>I would start with a constrained prototype, not a replacement for every programming language.</p>
+<p><strong>First, a small semantic transaction engine.</strong> Use a Rust control plane, a restricted typed IR, a content-addressed artifact store, a durable revision database and a policy checker. An untrusted generator proposes implementation changes. Z3 or cvc5 checks bounded or decidable obligations, and a sandbox executes admissible candidates. Syntax-guided synthesis and proof-carrying code provide useful foundations (<a href="https://www.microsoft.com/en-us/research/publication/syntax-guided-synthesis/">Syntax-guided synthesis</a>, <a href="https://doi.org/10.1145/263699.263712">Proof-carrying code</a>). Translation validation can address some gaps between the verified representation and compiled artifact (<a href="https://doi.org/10.1145/3453483.3454030">Alive2 translation validation</a>).</p>
+<p><strong>Next, stateful cross-layer changes.</strong> Extend the model with explicit state transitions, permissions, concurrency and environmental assumptions. Build an assurance dependency graph and a transactional authorization mechanism. Reproduce the reservation example with real concurrent workers and controlled infrastructure configurations. Test stale revisions, conflicting proposals, revoked evidence, partial deployment and incompatible state migrations. GitOps reconciliation is an existing deployment pattern that can be adapted to this workflow (<a href="https://github.com/open-gitops/documents/blob/main/PRINCIPLES.md">OpenGitOps</a>).</p>
+<p><strong>Finally, a production feedback loop.</strong> Connect runtime telemetry to a budgeted synthesis queue. Allow controlled autonomous deployment for a narrow category of reversible, low-risk changes. Extend the permitted scope only as the evidence supports it. Compare the approach to a conventional agent-plus-CI pipeline on the same tasks, using the same verification and workload conditions.</p>
+<p>The research question is whether a shared evolution protocol can prevent invalid compositions and stale-evidence deployments while making useful engineering progress economically. That is a falsifiable question. A prototype may demonstrate that some aspects are impractical, that the assurance model is too expensive, or that the proposed integration adds little to existing tools. Those would be valuable results too.</p>
+<h2>11. Where the vision reaches its limits</h2>
+<p>General program verification is undecidable. State spaces grow quickly. Specifications can be incomplete or wrong. External systems may not respect the models we use to represent them. Performance measurements are noisy, and real deployments cannot always be rolled back.</p>
+<p>Removing humans from routine implementation does not remove these limitations. Nor does it settle who is responsible for a system's objectives, the risks it takes or the consequences of its mistakes.</p>
+<p>I do not expect every class of software to adopt the same level of autonomy. A deterministic data transformation may be much easier to verify and replace than a healthcare workflow or an unpredictable AI-powered application. The architecture must accommodate different assurance levels without pretending they are equivalent.</p>
+<p>A mature platform should be able to express that a property is unknown, that evidence is insufficient, or that an optimization is not worth its cost. It should be allowed to stop.</p>
+<h2>Closing thoughts</h2>
+<p>The idea that AI will change programming is no longer particularly controversial. What remains open is how far we should rethink the systems through which software is created, validated and operated.</p>
+<p>Generation VII is my attempt to explore that question through the lens of systems and quality engineering. Its proposed contribution is not any single invention, but a concrete engineering hypothesis: that software evolution, including cross-layer changes and the validity of their evidence, can be governed through a common, independently enforced transaction protocol.</p>
+<p>If that hypothesis proves useful, source code may gradually become less central to software engineering. The durable assets would be the semantics, the authority governing their evolution and the evidence that justifies the system's continued operation.</p>
+<p>I would like to see a future in which we spend less effort asking who wrote the code and more effort establishing why the resulting system is allowed to run, change and continue running.</p>
+<h2>Author's Note &amp; Open Discussion</h2>
+<p>This article represents my personal perspective on the possible evolution of software engineering. Generation VII and Autonomous Computational Engineering are proposed frameworks for discussion and experimentation, not established industry standards or predictions presented as certainties.</p>
+<p>I used AI tools as collaborative partners in researching, exploring, structuring and refining the ideas, and in preparing the technical experiments and illustrations. I take responsibility for the final content, interpretations and conclusions.</p>
+<p>I would particularly welcome perspectives from software architects, infrastructure engineers, compiler researchers, security practitioners and quality engineers. Which aspects of this proposal are technically realistic? What existing research have I overlooked? Where would the architecture fail, and what would be a better approach?</p>
+<p>I am interested in constructive criticism, alternative designs and evidence that challenges my assumptions. The purpose is to contribute to an ongoing discussion, not to claim ownership of ideas that others have already developed.</p>
+<h2>Further reading</h2>
+<ul>
+
+<li>Kephart &amp; Chess, <a href="https://doi.org/10.1109/MC.2003.1160055">The Vision of Autonomic Computing (2003)</a>.</li>
+<li>Hayden et al., <a href="https://drum.lib.umd.edu/items/e0d14543-3cd2-4096-b1d9-0f7ffc3ae2ff">Specifying and Verifying the Correctness of Dynamic Software Updates (2011, technical report)</a>.</li>
+<li><a href="https://doi.org/10.1016/j.jss.2025.112508">Model Transformation and Property Preservation in Rigorous Software Development: A Systematic Literature Review (2025)</a>.</li>
+<li>Wang et al., <a href="https://rdi.berkeley.edu/assets/position-auto-sd.pdf">Towards Autonomous Software Development (2026, position paper)</a>, with <a href="https://rdi.berkeley.edu/blog/auto-software-dev/">an accompanying overview</a>.</li>
+<li>Hickey, <a href="https://arxiv.org/abs/2611.02285">Modern Software Engineering with Verification Agents (2026, preprint)</a>.</li>
+<li>Di Santi, <a href="https://arxiv.org/abs/2611.23249">The Obsolescence of High-Level Code: Agentic Generation from Semantic Artifacts (2026, preprint)</a>.</li>
+<li>McCarthy, <a href="https://factory.strongdm.ai/">StrongDM: Software Factories and the Agentic Moment (2026)</a>.</li>
+<li>Shumilov, <a href="https://doi.org/10.66308/air.e2026043">AI-Readable Architecture: A New Abstraction Layer for AI-Augmented Software Development (2026)</a>.</li>
+<li><a href="https://mlir.llvm.org/docs/LangRef/">MLIR Language Reference</a>.</li>
+<li>Calinescu et al., <a href="https://doi.org/10.1109/TSE.2017.2738640">Engineering Trustworthy Self-Adaptive Software with Dynamic Assurance Cases</a>.</li>
+<li>Google Cloud, <a href="https://cloud.google.com/blog/products/ai-machine-learning/agent-executor-googles-distributed-agent-runtime">Agent Executor: A Distributed Agent Runtime (2026)</a> and <a href="https://cloud.google.com/blog/topics/ai-infrastructure/agent-compute-engine-deep-dive">Agent Compute Engine Deep Dive (2026)</a>.</li>
+<li>Google DeepMind, <a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/">AlphaEvolve (2025)</a> and <a href="https://deepmind.google/blog/alphaevolve-impact/">Scaling Impact Across Fields (2026)</a>.</li>
+<li>NIST, <a href="https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation">Back to the Future: Why Agentic AI Needs a Strong Identity Foundation (2026)</a>.</li>
+<li><a href="https://in-toto.github.io/in-toto.html">in-toto Software Supply Chain Integrity Framework</a> and <a href="https://slsa.dev/provenance/v1">SLSA Build Provenance</a>.</li>
+<li><a href="https://theupdateframework.github.io/specification/latest/">The Update Framework Specification</a>.</li>
+<li>Alur et al., <a href="https://www.microsoft.com/en-us/research/publication/syntax-guided-synthesis/">Syntax-Guided Synthesis (2015)</a>.</li>
+<li>Necula, <a href="https://doi.org/10.1145/263699.263712">Proof-Carrying Code (1997)</a>.</li>
+<li>Lopes et al., <a href="https://doi.org/10.1145/3453483.3454030">Alive2: Bounded Translation Validation for LLVM (2021)</a>.</li>
+<li><a href="https://github.com/open-gitops/documents/blob/main/PRINCIPLES.md">OpenGitOps Principles</a>.</li>
+<li><a href="https://doi.org/10.3390/software5030032">Formal Verification Under Evolution in Microservice-Based Systems: A Systematic Literature Review (2026)</a>.</li>
+</ul>
+</main></body></html>

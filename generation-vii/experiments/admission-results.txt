@@ -1,0 +1,12 @@
+Z3 version 4.13.3 - 64 bit
+Wrapping predicate disagrees with reference
+sat
+Reported witness
+sat
+((used #xfffffffffffffffd)
+ (requested #x0000000000000003)
+ (capacity #xfffffffffffffffe)
+ (wrapping true)
+ (reference false))
+Guarded predicate disagrees with reference
+unsat

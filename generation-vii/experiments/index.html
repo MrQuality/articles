@@ -18,11 +18,21 @@
     <h2>Unsigned 64-bit resource admission</h2>
     <p>Download <a href="admission.smt2">the SMT-LIB model</a> and run it with Z3. The article used Z3 4.13.3.</p>
     <pre><code>z3 admission.smt2</code></pre>
-    <p>Expected results are SAT for the wrapping predicate and the article's concrete witness, and UNSAT for the guarded predicate.</p>
+    <p>The <a href="admission-results.txt">recorded Z3 4.13.3 run</a> returns SAT for the wrapping predicate and the article's concrete witness, and UNSAT for the guarded predicate.</p>
     <h2>Combining two scheduler changes</h2>
     <p>Download <a href="evolution_model.py">the state explorer</a> and run it with Python 3.10 or later.</p>
     <pre><code>python evolution_model.py</code></pre>
     <p>Compare your output with the <a href="evolution-results.txt">recorded run</a>. Only the combined changes violate the invariant in this model.</p>
+    <h2>Checking evidence before admission</h2>
+    <p>Download the <a href="admission_model.py">admission model</a> alongside the state explorer and run it with Python 3.10 or later.</p>
+    <pre><code>python admission_model.py</code></pre>
+    <p>Compare the output with the <a href="admission-results.json">recorded decisions</a>. Single-worker evidence is rejected when a proposed change introduces two workers. Re-verification finds a violation and rejects the combined configuration.</p>
+    <h2>Explore the recorded results</h2>
+    <ul>
+      <li><a href="reservation-trace.html">Play or step through the reservation counterexample</a></li>
+      <li><a href="assurance-graph.html">Explore evidence applicability and admission decisions</a></li>
+    </ul>
+    <p>Both animations include static tables and support reduced-motion preferences.</p>
     <p><a href="https://github.com/MrQuality/articles/tree/main/generation-vii/experiments">Browse the experiment files on GitHub</a></p>
   </main>
 </body>

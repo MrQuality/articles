@@ -1,0 +1,181 @@
+{
+  "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+  "claim": "accepted <= capacity and used == accepted",
+  "capacity": 1,
+  "combined_reachable_states": 10,
+  "trace": [
+    {
+      "event": "Initial state",
+      "used": 0,
+      "accepted": 0,
+      "phases": [
+        0,
+        0
+      ]
+    },
+    {
+      "event": "R1: observe available capacity",
+      "used": 0,
+      "accepted": 0,
+      "phases": [
+        1,
+        0
+      ]
+    },
+    {
+      "event": "R2: observe available capacity",
+      "used": 0,
+      "accepted": 0,
+      "phases": [
+        1,
+        1
+      ]
+    },
+    {
+      "event": "R1: commit prior acceptance",
+      "used": 1,
+      "accepted": 1,
+      "phases": [
+        2,
+        1
+      ]
+    },
+    {
+      "event": "R2: commit prior acceptance",
+      "used": 1,
+      "accepted": 2,
+      "phases": [
+        2,
+        2
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "case": "A with applicable evidence",
+      "candidate": {
+        "atomic": false,
+        "workers": 1
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": false,
+          "workers": 1
+        },
+        "reachable_states": 6,
+        "holds": true
+      },
+      "decision": "ACCEPT: applicable evidence establishes the modeled invariant"
+    },
+    {
+      "case": "A+B reusing A's evidence",
+      "candidate": {
+        "atomic": false,
+        "workers": 2
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": false,
+          "workers": 1
+        },
+        "reachable_states": 6,
+        "holds": true
+      },
+      "decision": "REJECT: evidence does not cover the proposed configuration"
+    },
+    {
+      "case": "A+B after re-verification",
+      "candidate": {
+        "atomic": false,
+        "workers": 2
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": false,
+          "workers": 2
+        },
+        "reachable_states": 10,
+        "holds": false
+      },
+      "decision": "REJECT: verification found an invariant violation"
+    },
+    {
+      "case": "B with applicable evidence",
+      "candidate": {
+        "atomic": true,
+        "workers": 2
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": true,
+          "workers": 2
+        },
+        "reachable_states": 4,
+        "holds": true
+      },
+      "decision": "ACCEPT: applicable evidence establishes the modeled invariant"
+    },
+    {
+      "case": "Changed implementation with A's evidence",
+      "candidate": {
+        "atomic": true,
+        "workers": 1
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": false,
+          "workers": 1
+        },
+        "reachable_states": 6,
+        "holds": true
+      },
+      "decision": "REJECT: evidence does not cover the proposed configuration"
+    },
+    {
+      "case": "Changed model identity",
+      "candidate": {
+        "atomic": false,
+        "workers": 1
+      },
+      "evidence": {
+        "model_id": "older-model",
+        "claim": "accepted <= capacity and used == accepted",
+        "configuration": {
+          "atomic": false,
+          "workers": 1
+        },
+        "reachable_states": 6,
+        "holds": true
+      },
+      "decision": "REJECT: evidence covers a different model or claim"
+    },
+    {
+      "case": "Changed claim",
+      "candidate": {
+        "atomic": false,
+        "workers": 1
+      },
+      "evidence": {
+        "model_id": "1441957910815cab11c2bc2f22ce94ced5020d1c79c72c425b36b114f453fe4f",
+        "claim": "used <= capacity",
+        "configuration": {
+          "atomic": false,
+          "workers": 1
+        },
+        "reachable_states": 6,
+        "holds": true
+      },
+      "decision": "REJECT: evidence covers a different model or claim"
+    }
+  ]
+}

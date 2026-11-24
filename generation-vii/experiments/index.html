@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generation VII experiments</title>
+  <style>
+    body { max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem; font: 18px/1.6 system-ui, sans-serif; color: #162338; }
+    h1, h2 { line-height: 1.2; }
+    a { color: #14685f; text-underline-offset: .16em; }
+    pre { background: #edf1f5; padding: 1rem; overflow: auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="../">Generation VII article</a>
+    <h1>Reproduce the experiments</h1>
+    <h2>Unsigned 64-bit resource admission</h2>
+    <p>Download <a href="admission.smt2">the SMT-LIB model</a> and run it with Z3. The article used Z3 4.13.3.</p>
+    <pre><code>z3 admission.smt2</code></pre>
+    <p>Expected results are SAT for the wrapping predicate and the article's concrete witness, and UNSAT for the guarded predicate.</p>
+    <h2>Combining two scheduler changes</h2>
+    <p>Download <a href="evolution_model.py">the state explorer</a> and run it with Python 3.10 or later.</p>
+    <pre><code>python evolution_model.py</code></pre>
+    <p>Compare your output with the <a href="evolution-results.txt">recorded run</a>. Only the combined changes violate the invariant in this model.</p>
+    <p><a href="https://github.com/MrQuality/articles/tree/main/generation-vii/experiments">Browse the experiment files on GitHub</a></p>
+  </main>
+</body>
+</html>

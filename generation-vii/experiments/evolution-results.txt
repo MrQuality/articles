@@ -1,0 +1,8 @@
+Baseline: NO VIOLATION; 4 reachable states
+A: software change: NO VIOLATION; 6 reachable states
+B: infrastructure change: NO VIOLATION; 4 reachable states
+A+B: combined changes: VIOLATION; 10 reachable states
+  R1: observe available capacity; used=0, accepted=0, phases=(1, 0)
+  R2: observe available capacity; used=0, accepted=0, phases=(1, 1)
+  R1: commit prior acceptance; used=1, accepted=1, phases=(2, 1)
+  R2: commit prior acceptance; used=1, accepted=2, phases=(2, 2)

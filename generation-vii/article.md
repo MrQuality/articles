@@ -161,6 +161,14 @@ These have very different resource requirements. GPUs or other accelerators may 
 
 An ACE control plane would therefore need a heterogeneous job scheduler, durable task execution, isolated ephemeral environments, content-addressed artifact and evidence storage, and explicit compute budgets. It should reserve verification capacity so a flood of generated candidates cannot starve the mechanisms that assess them. Shared caches must be keyed by relevant inputs and trust boundaries, not simply by the candidate's name.
 
+| Workload | Resource and execution needs |
+| --- | --- |
+| Generation | Accelerators and CPU for model inference and candidate search |
+| Verification | CPU and memory for solvers, builds and fuzzing |
+| Evaluation | Isolated, representative environments for replay, fault injection and benchmarks |
+
+*A budgeted scheduler reserves verification capacity. Versioned outputs remain bound to the candidate, assumptions, environment and toolchain.*
+
 There is already work on durable distributed agent runtimes and hardware-isolated agent execution ([Google Cloud’s distributed agent runtime](https://cloud.google.com/blog/products/ai-machine-learning/agent-executor-googles-distributed-agent-runtime)). Existing Kubernetes infrastructure, microVMs, WebAssembly sandboxes, remote build systems and observability tools are plausible building blocks. The challenge is to arrange them around engineering obligations rather than model throughput alone.
 
 I also see an opportunity for software and infrastructure to evolve together. An agent might propose a different data representation, execution target, memory layout or deployment topology, rather than optimize an algorithm in isolation. Google DeepMind's AlphaEvolve provides a concrete precedent for AI-discovered improvements to infrastructure and hardware design ([AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/)).
@@ -176,6 +184,15 @@ An engineering agent may consume untrusted documentation, dependency metadata, t
 I would design the engineering control plane so generation workers cannot access production credentials, sign release authorization, overwrite acceptance criteria or modify protected policy. Each worker needs a scoped identity, short-lived capabilities, restricted network access, resource quotas and isolation appropriate to the threat model. NIST's work on agentic identity and existing software supply-chain security frameworks offer useful starting points ([NIST’s agentic identity work](https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation), [in-toto and SLSA](https://in-toto.github.io/in-toto.html), [The Update Framework](https://theupdateframework.github.io/specification/latest/)).
 
 Candidate execution should be isolated from trusted verification and release infrastructure. Independent verifiers must bind their evidence to the exact candidate, specification, environment and toolchain. A protected deployment authority must validate signatures, current policy, revocation status and the intended execution target. A valid signature establishes provenance under a trust model; it does not establish correctness.
+
+| Boundary | Responsibility |
+| --- | --- |
+| Untrusted proposal workers | Generate and trial candidates with scoped capabilities and isolated execution |
+| Protected verification | Assess independently defined obligations and bind evidence to the candidate and assumptions |
+| Protected deployment authority | Check policy, applicable evidence, signatures, revocation and target |
+| Production | Run the authorized artifact and configuration |
+
+*Each handoff requires validation by the receiving authority. Generation workers hold no production credentials or release-signing authority.*
 
 There are additional challenges. An agent might overfit a benchmark, weaken a test or exploit a gap in a verifier. A compromised dependency could invalidate earlier assumptions. A malicious agent might deliberately exhaust verification resources. An old but properly signed artifact might no longer be safe to deploy. These scenarios require protected evaluations, evidence freshness rules, replay protection, admission checks and incident recovery.
 
@@ -193,6 +210,20 @@ I would measure success by verified improvements per unit of engineering cost, e
 
 Optimization needs a stopping condition. Sometimes the correct decision is to retain the current implementation. A system that continuously changes software is not necessarily better than one that knows when to leave it alone.
 
+| Decision input | Question |
+| --- | --- |
+| Full cost | What do inference, verification, evaluation, rollout and recovery cost? |
+| Expected benefit | What improvement is measured against the same strong baseline? |
+| Required assurance | Are the evidence, risk and authority acceptable under policy? |
+
+| Outcome | Response |
+| --- | --- |
+| Justified within budget and policy | Proceed through authorization and controlled rollout |
+| Unjustified | Retain the current implementation |
+| Uncertain | Gather further evidence within budget or defer |
+
+*Economic benefit must satisfy the governing assurance requirements.*
+
 ## 9. Can the engineering platform improve itself?
 
 A natural extension is for agents to optimize the infrastructure and tooling they use to engineer other systems. They could propose more efficient search algorithms, better resource scheduling, improved compiler passes or more effective verification strategies.
@@ -201,11 +232,26 @@ That introduces a recursive trust problem. If the platform can change the mechan
 
 I would keep a deliberately small trusted computing base: policy enforcement, artifact identity, critical validation and admission mechanisms, together with their dependencies. Ordinary agents could propose changes to those components, but a separately authorized process would decide whether to accept them. Its evidence requirements must be anchored outside the authority of the proposing agent. A replacement verifier should be evaluated against the previously authorized trust criteria, not criteria it has written for itself.
 
+| Proposed change | Approval path |
+| --- | --- |
+| Implementation within delegated scope | Implementation authority assesses it under the delegated change policy |
+| Verifier or governing policy | A separately authorized process assesses it against previously authorized trust criteria |
+
+*Agents may propose changes to either layer. Authority to approve changes to the trust mechanism must be anchored outside the proposing agent.*
+
 This does not require every engineering decision to involve a human. It requires independent authority. Human intervention may be reserved for intent changes, unresolved risk, conflicting requirements and exceptional decisions, according to policy. Autonomy should be an engineering property with explicit limits, rather than a claim that no human ever needs to be involved.
 
 ## 10. How I would build and evaluate it
 
 I would start with a constrained prototype, not a replacement for every programming language.
+
+| Prototype stage | Evaluation question |
+| --- | --- |
+| Semantic transaction engine | Can it admit a change with applicable evidence? |
+| Cross-layer evolution | Can it reject stale evidence, incompatible combinations and unsafe migrations? |
+| Production feedback loop | Does it improve outcomes over a strong agent-plus-CI baseline? |
+
+*Each stage needs evidence that justifies expanding the permitted scope.*
 
 **First, a small semantic transaction engine.** Use a Rust control plane, a restricted typed IR, a content-addressed artifact store, a durable revision database and a policy checker. An untrusted generator proposes implementation changes. Z3 or cvc5 checks bounded or decidable obligations, and a sandbox executes admissible candidates. Syntax-guided synthesis and proof-carrying code provide useful foundations ([Syntax-guided synthesis](https://www.microsoft.com/en-us/research/publication/syntax-guided-synthesis/), [Proof-carrying code](https://doi.org/10.1145/263699.263712)). Translation validation can address some gaps between the verified representation and compiled artifact ([Alive2 translation validation](https://doi.org/10.1145/3453483.3454030)).
 
@@ -226,6 +272,14 @@ Removing humans from routine implementation does not remove these limitations. N
 I do not expect every class of software to adopt the same level of autonomy. A deterministic data transformation may be much easier to verify and replace than a healthcare workflow or an unpredictable AI-powered application. The architecture must accommodate different assurance levels without pretending they are equivalent.
 
 A mature platform should be able to express that a property is unknown, that evidence is insufficient, or that an optimization is not worth its cost. It should be allowed to stop.
+
+| What the platform encounters | Possible policy response |
+| --- | --- |
+| A property remains unknown | Expose the uncertainty and seek authorized review |
+| Applicable evidence is insufficient | Reject or defer the proposed change |
+| The optimization is not worth its cost | Retain the current implementation |
+
+*Explicit uncertainty, deferral and stopping are outcomes the architecture must support.*
 
 ## Closing thoughts
 

@@ -1,4 +1,33 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Generation VII | Nir Rozen</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f6f9;color:#162338;font:18px/1.72 system-ui,-apple-system,sans-serif}main{max-width:920px;margin:0 auto;background:white;padding:48px 65px 75px}img{width:100%;height:auto;display:block;border-radius:7px;margin:24px 0 10px}h1{font-size:2.25rem;letter-spacing:-.035em;line-height:1.12;margin:34px 0 12px;color:#102138}h2{font-size:1.55rem;line-height:1.25;letter-spacing:-.025em;margin:42px 0 15px;color:#102138}p{margin:0 0 17px}a{color:#14685f;overflow-wrap:anywhere}code{font-size:.88em;background:#edf1f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;font-size:.86em;margin:22px 0 26px}th,td{border-bottom:1px solid #dbe3ec;text-align:left;vertical-align:top;padding:12px 13px}th{background:#eef5f6;color:#153d3b}em{color:#58677c}strong{color:#142a3d}tr:nth-child(even){background:#f8fafc} @media(max-width:650px){main{padding:22px}body{font-size:16px}h1{font-size:1.9rem}th,td{padding:7px;overflow-wrap:anywhere}}iframe{width:100%;border:0;display:block;margin:24px 0;background:#f4f6f9}.trace-animation{height:530px}.assurance-animation{height:500px}@media(max-width:650px){.trace-animation{height:610px}.assurance-animation{height:820px}}
+
+.explanation { margin:28px 0 32px; padding:24px; background:#f2f6f8; border-radius:7px; line-height:1.45; }
+.explanation figcaption { margin-top:16px; color:#46596c; font-size:.88em; }
+.explanation strong { display:block; margin-bottom:6px; }
+.explanation .visual-label { font-size:.83em; color:#46596c; margin:0 0 8px; }
+.visual-grid { display:grid; gap:14px; }
+.visual-grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.visual-grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.visual-node { background:#fff; padding:16px; border-radius:5px; overflow-wrap:anywhere; }
+.visual-node.highlight { background:#dceee8; }
+.visual-node.caution { background:#f8e9de; }
+.visual-connector { text-align:center; color:#46596c; line-height:1; padding:10px; font-size:1.2em; }
+.visual-reserve { padding:14px 0 0; margin-top:16px; border-top:1px solid #bfccd5; font-size:.9em; }
+.explanation .visual-steps { list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+.visual-steps li { display:grid; grid-template-columns:150px minmax(0,1fr); gap:20px; background:white; padding:16px; }
+.visual-steps span { display:block; }
+.visual-steps .deliverable { margin-bottom:5px; }
+.visual-steps .question { color:#46596c; font-size:.9em; }
+.explanation table { margin:0; font-size:.9em; }
+.explanation th,.explanation td { padding:12px 10px; }
+.explanation tr:nth-child(even) { background:transparent; }
+.explanation th { background:transparent; }
+@media(max-width:650px) {
+  .explanation { padding:18px; }
+  .visual-grid.three,.visual-grid.two { grid-template-columns:1fr; }
+  .visual-steps li { grid-template-columns:1fr; gap:6px; padding:14px; }
+  .explanation th,.explanation td { padding:10px 6px; }
+}
+
 </style></head><body><main><nav aria-label="Publication"><a href="../">Articles</a> · <a href="#experiments">Experiments</a> · <a href="article.md">Markdown</a></nav><img src="figures/00-cover.png" alt="Generation VII: Autonomous Computational Engineering cover"><h1>Generation VII: Autonomous Computational Engineering</h1>
 <p><em>Beyond AI-written code: Toward a machine-native architecture for governed, verified and continuously evolving software.</em></p>
 <p>By Nir Rozen</p>
@@ -161,6 +190,19 @@
 <p>Today, much AI infrastructure is designed around model training, inference and agent execution. Autonomous engineering would add another class of workloads: large-scale candidate generation, compilation, theorem proving, simulation, fuzzing, fault injection, benchmarking and continuous evaluation.</p>
 <p>These have very different resource requirements. GPUs or other accelerators may support model inference, while many solvers and builds need CPU time and memory. Distributed-system simulation may benefit from deterministic replay; benchmarking may need isolated, representative hardware. Some verification jobs may run much longer than the inference that produced the candidate.</p>
 <p>An ACE control plane would therefore need a heterogeneous job scheduler, durable task execution, isolated ephemeral environments, content-addressed artifact and evidence storage, and explicit compute budgets. It should reserve verification capacity so a flood of generated candidates cannot starve the mechanisms that assess them. Shared caches must be keyed by relevant inputs and trust boundaries, not simply by the candidate's name.</p>
+<figure class="explanation" data-section-visual="6" aria-label="Proposed allocation of engineering workloads">
+<div class="visual-node highlight"><strong>Budgeted workload scheduler</strong>Assign jobs by resource needs and assurance policy.</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-grid three">
+  <div class="visual-node"><strong>Generation</strong>Model inference and candidate search<br><span class="visual-label">Accelerators and CPU</span></div>
+  <div class="visual-node"><strong>Verification</strong>Solvers, builds and fuzzing<br><span class="visual-label">CPU and memory</span></div>
+  <div class="visual-node"><strong>Evaluation</strong>Replay, fault injection and benchmarks<br><span class="visual-label">Isolated, representative environments</span></div>
+</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-node"><strong>Versioned artifacts and evidence</strong>Bind outputs to the candidate, assumptions, environment and toolchain.</div>
+<div class="visual-reserve"><strong>Reserved verification capacity</strong>Candidate generation must leave enough capacity to assess proposed changes.</div>
+<figcaption>Proposed workload allocation. Scheduling must preserve the isolation and trust requirements of each job.</figcaption>
+</figure>
 <p>There is already work on durable distributed agent runtimes and hardware-isolated agent execution (<a href="https://cloud.google.com/blog/products/ai-machine-learning/agent-executor-googles-distributed-agent-runtime">Google Cloud’s distributed agent runtime</a>). Existing Kubernetes infrastructure, microVMs, WebAssembly sandboxes, remote build systems and observability tools are plausible building blocks. The challenge is to arrange them around engineering obligations rather than model throughput alone.</p>
 <p>I also see an opportunity for software and infrastructure to evolve together. An agent might propose a different data representation, execution target, memory layout or deployment topology, rather than optimize an algorithm in isolation. Google DeepMind's AlphaEvolve provides a concrete precedent for AI-discovered improvements to infrastructure and hardware design (<a href="https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/">AlphaEvolve</a>).</p>
 <p>The interesting question is how to authorize such co-evolution without losing the assumptions that make each layer correct. The scheduler experiment illustrates exactly why that matters.</p>
@@ -169,6 +211,16 @@
 <p>An engineering agent may consume untrusted documentation, dependency metadata, telemetry or test output. It may encounter indirect prompt injection, compromised tools or poisoned feedback. An adversary may not need to exploit the running application if they can convince the engineering platform to install a malicious successor.</p>
 <p>I would design the engineering control plane so generation workers cannot access production credentials, sign release authorization, overwrite acceptance criteria or modify protected policy. Each worker needs a scoped identity, short-lived capabilities, restricted network access, resource quotas and isolation appropriate to the threat model. NIST's work on agentic identity and existing software supply-chain security frameworks offer useful starting points (<a href="https://www.nist.gov/blogs/cybersecurity-insights/back-future-why-agentic-ai-needs-strong-identity-foundation">NIST’s agentic identity work</a>, <a href="https://in-toto.github.io/in-toto.html">in-toto and SLSA</a>, <a href="https://theupdateframework.github.io/specification/latest/">The Update Framework</a>).</p>
 <p>Candidate execution should be isolated from trusted verification and release infrastructure. Independent verifiers must bind their evidence to the exact candidate, specification, environment and toolchain. A protected deployment authority must validate signatures, current policy, revocation status and the intended execution target. A valid signature establishes provenance under a trust model; it does not establish correctness.</p>
+<figure class="explanation" data-section-visual="7" aria-label="Proposed trust boundaries from candidate generation to production">
+<div class="visual-node"><div class="visual-label">Untrusted proposal workers</div><strong>Generate and trial a candidate</strong>Scoped capabilities and isolated execution.</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-node highlight"><div class="visual-label">Protected verification boundary</div><strong>Assess independently defined obligations</strong>Produce evidence bound to the candidate and its operating assumptions.</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-node highlight"><div class="visual-label">Protected deployment authority</div><strong>Authorize the exact release</strong>Check policy, evidence applicability, signatures, revocation and target.</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-node"><strong>Production</strong>Run the authorized artifact and configuration.</div>
+<figcaption>Each downward handoff requires validation by the receiving authority. Generation workers hold no production credentials or release-signing authority.</figcaption>
+</figure>
 <p>There are additional challenges. An agent might overfit a benchmark, weaken a test or exploit a gap in a verifier. A compromised dependency could invalidate earlier assumptions. A malicious agent might deliberately exhaust verification resources. An old but properly signed artifact might no longer be safe to deploy. These scenarios require protected evaluations, evidence freshness rules, replay protection, admission checks and incident recovery.</p>
 <p>The central security objective is to constrain the consequences of a compromised generator. A model should never gain deployment privileges merely because it generated an explanation of why a change is safe.</p>
 <h2>8. Quality engineering and the economics of autonomy</h2>
@@ -177,13 +229,44 @@
 <p>The economic question changes too. A platform may generate thousands of candidates, but evaluating all of them may cost more than the improvement is worth. The scheduler must account for inference, proof search, testing, infrastructure usage, rollout risk and the lifetime benefit of a proposed change.</p>
 <p>I would measure success by verified improvements per unit of engineering cost, escaped violations, valid evidence coverage, reproducibility, rejected unsafe transitions and recovery time. I would compare those measurements against conventional agent-driven development with strong CI and the same acceptance criteria. Otherwise, we risk comparing an ambitious architecture against a deliberately weak baseline.</p>
 <p>Optimization needs a stopping condition. Sometimes the correct decision is to retain the current implementation. A system that continuously changes software is not necessarily better than one that knows when to leave it alone.</p>
+<figure class="explanation" data-section-visual="8" aria-label="Proposed decision for whether to pursue and authorize an optimization">
+<div class="visual-grid three">
+  <div class="visual-node"><strong>Full cost</strong>Inference, verification, evaluation, rollout and recovery.</div>
+  <div class="visual-node"><strong>Expected benefit</strong>Measured improvement over the same strong baseline.</div>
+  <div class="visual-node"><strong>Required assurance</strong>Applicable evidence, permitted risk and authority.</div>
+</div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-node highlight"><strong>Is the change justified within its budget and assurance policy?</strong></div>
+<div class="visual-connector" aria-hidden="true">↓</div>
+<div class="visual-grid three">
+  <div class="visual-node"><strong>Yes</strong>Proceed through authorization and controlled rollout.</div>
+  <div class="visual-node"><strong>No</strong>Retain the current implementation.</div>
+  <div class="visual-node caution"><strong>Uncertain</strong>Gather further evidence within budget or defer.</div>
+</div>
+<figcaption>Proposed decision criteria. Economic benefit must satisfy the governing assurance requirements.</figcaption>
+</figure>
 <h2>9. Can the engineering platform improve itself?</h2>
 <p>A natural extension is for agents to optimize the infrastructure and tooling they use to engineer other systems. They could propose more efficient search algorithms, better resource scheduling, improved compiler passes or more effective verification strategies.</p>
 <p>That introduces a recursive trust problem. If the platform can change the mechanisms that decide whether its own changes are safe, it cannot also be the sole authority approving those modifications.</p>
 <p>I would keep a deliberately small trusted computing base: policy enforcement, artifact identity, critical validation and admission mechanisms, together with their dependencies. Ordinary agents could propose changes to those components, but a separately authorized process would decide whether to accept them. Its evidence requirements must be anchored outside the authority of the proposing agent. A replacement verifier should be evaluated against the previously authorized trust criteria, not criteria it has written for itself.</p>
+<figure class="explanation" data-section-visual="9" aria-label="Proposed authority for ordinary changes and trust mechanism changes">
+<div class="visual-grid two">
+  <div class="visual-node"><strong>Implementation proposal</strong>Assessed under the delegated change policy.<div class="visual-connector" aria-hidden="true">↓</div><strong>Implementation authority</strong>May approve changes within its permitted scope.</div>
+  <div class="visual-node highlight"><strong>Verifier or policy proposal</strong>Assessed against previously authorized trust criteria.<div class="visual-connector" aria-hidden="true">↓</div><strong>Separately authorized process</strong>Decides whether the trust mechanism may change.</div>
+</div>
+<figcaption>Agents may propose changes to either layer. Authority to approve a change to the trust mechanism must be anchored outside the proposing agent.</figcaption>
+</figure>
 <p>This does not require every engineering decision to involve a human. It requires independent authority. Human intervention may be reserved for intent changes, unresolved risk, conflicting requirements and exceptional decisions, according to policy. Autonomy should be an engineering property with explicit limits, rather than a claim that no human ever needs to be involved.</p>
 <h2>10. How I would build and evaluate it</h2>
 <p>I would start with a constrained prototype, not a replacement for every programming language.</p>
+<figure class="explanation" data-section-visual="10" aria-label="Three proposed prototype stages and their evaluation questions">
+<ol class="visual-steps">
+  <li><strong>Semantic transaction engine</strong><div><span class="deliverable">Restricted IR, artifact identity, policy checks and isolated candidates.</span><span class="question">Can the prototype admit a change with applicable evidence?</span></div></li>
+  <li><strong>Cross-layer evolution</strong><div><span class="deliverable">Stateful changes, environmental assumptions and evidence dependencies.</span><span class="question">Can it reject stale evidence, incompatible combinations and unsafe migrations?</span></div></li>
+  <li><strong>Production feedback loop</strong><div><span class="deliverable">Budgeted search and controlled rollout for reversible, low-risk changes.</span><span class="question">Does it improve outcomes over a strong agent-plus-CI baseline?</span></div></li>
+</ol>
+<figcaption>Proposed progression. Each stage needs evidence that justifies expanding the permitted scope.</figcaption>
+</figure>
 <p><strong>First, a small semantic transaction engine.</strong> Use a Rust control plane, a restricted typed IR, a content-addressed artifact store, a durable revision database and a policy checker. An untrusted generator proposes implementation changes. Z3 or cvc5 checks bounded or decidable obligations, and a sandbox executes admissible candidates. Syntax-guided synthesis and proof-carrying code provide useful foundations (<a href="https://www.microsoft.com/en-us/research/publication/syntax-guided-synthesis/">Syntax-guided synthesis</a>, <a href="https://doi.org/10.1145/263699.263712">Proof-carrying code</a>). Translation validation can address some gaps between the verified representation and compiled artifact (<a href="https://doi.org/10.1145/3453483.3454030">Alive2 translation validation</a>).</p>
 <p><strong>Next, stateful cross-layer changes.</strong> Extend the model with explicit state transitions, permissions, concurrency and environmental assumptions. Build an assurance dependency graph and a transactional authorization mechanism. Reproduce the reservation example with real concurrent workers and controlled infrastructure configurations. Test stale revisions, conflicting proposals, revoked evidence, partial deployment and incompatible state migrations. GitOps reconciliation is an existing deployment pattern that can be adapted to this workflow (<a href="https://github.com/open-gitops/documents/blob/main/PRINCIPLES.md">OpenGitOps</a>).</p>
 <p><strong>Finally, a production feedback loop.</strong> Connect runtime telemetry to a budgeted synthesis queue. Allow controlled autonomous deployment for a narrow category of reversible, low-risk changes. Extend the permitted scope only as the evidence supports it. Compare the approach to a conventional agent-plus-CI pipeline on the same tasks, using the same verification and workload conditions.</p>
@@ -194,6 +277,15 @@
 <p>Removing humans from routine implementation does not remove these limitations. Nor does it settle who is responsible for a system's objectives, the risks it takes or the consequences of its mistakes.</p>
 <p>I do not expect every class of software to adopt the same level of autonomy. A deterministic data transformation may be much easier to verify and replace than a healthcare workflow or an unpredictable AI-powered application. The architecture must accommodate different assurance levels without pretending they are equivalent.</p>
 <p>A mature platform should be able to express that a property is unknown, that evidence is insufficient, or that an optimization is not worth its cost. It should be allowed to stop.</p>
+<figure class="explanation" data-section-visual="11" aria-label="Limits the proposed platform should surface and possible policy responses">
+<table><thead><tr><th scope="col">What the platform encounters</th><th scope="col">Possible policy response</th></tr></thead>
+<tbody>
+<tr><td>A property remains unknown</td><td>Expose the uncertainty and seek authorized review.</td></tr>
+<tr><td>Applicable evidence is insufficient</td><td>Reject or defer the proposed change.</td></tr>
+<tr><td>The optimization is not worth its cost</td><td>Retain the current implementation.</td></tr>
+</tbody></table>
+<figcaption>Explicit uncertainty, deferral and stopping are outcomes the architecture must support.</figcaption>
+</figure>
 <h2>Closing thoughts</h2>
 <p>The idea that AI will change programming is no longer particularly controversial. What remains open is how far we should rethink the systems through which software is created, validated and operated.</p>
 <p>Generation VII is my attempt to explore that question through the lens of systems and quality engineering. Its proposed contribution is not any single invention, but a concrete engineering hypothesis: that software evolution, including cross-layer changes and the validity of their evidence, can be governed through a common, independently enforced transaction protocol.</p>

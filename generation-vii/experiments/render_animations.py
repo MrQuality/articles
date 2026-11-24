@@ -38,6 +38,7 @@ th,td { text-align:left; padding:7px; border-bottom:1px solid #ccd6df; vertical-
 .independent { margin-top:22px; padding-top:12px; border-top:1px solid #a5b6c6; }
 .independent span { display:block; color:#14685f; }
 .caption { color:#44566c; font-size:.9rem; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @media(max-width:520px) { main{padding:16px;} .graph{grid-template-columns:1fr;gap:22px;} .node.dependent::before{content:"↓";left:50%;top:-25px;} .node span{margin-top:3px;} }
 @media(prefers-reduced-motion:reduce) { .marker,.node{transition:none;} }
 """
@@ -110,7 +111,7 @@ controls = """<div class="controls" hidden>
 <button id="previous" type="button">Previous</button>
 <button id="next" type="button">Next</button>
 <span id="counter" class="counter"></span>
-</div><p id="announcement" aria-live="polite" class="caption"></p>"""
+</div><p id="announcement" aria-live="polite" class="sr-only"></p>"""
 race_table = "<table><thead><tr><th>Event</th><th>Used</th><th>Accepted</th></tr></thead><tbody>" + "".join(
     f"<tr><td>{html.escape(row['event'])}</td><td>{row['used']}</td><td>{row['accepted']}</td></tr>"
     for row in data["trace"]

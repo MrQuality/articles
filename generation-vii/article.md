@@ -295,7 +295,7 @@ I would like to see a future in which we spend less effort asking who wrote the 
 
 This article represents my personal perspective on the possible evolution of software engineering. Generation VII and Autonomous Computational Engineering are proposed frameworks for discussion and experimentation, not established industry standards or predictions presented as certainties.
 
-I used AI tools as collaborative partners in researching, exploring, structuring and refining the ideas, and in preparing the technical experiments and illustrations. I take responsibility for the final content, interpretations and conclusions.
+I used AI tools as collaborative partners in researching, exploring, structuring and refining the ideas, and in preparing the technical experiments and illustrations.
 
 I would particularly welcome perspectives from software architects, infrastructure engineers, compiler researchers, security practitioners and quality engineers. Which aspects of this proposal are technically realistic? What existing research have I overlooked? Where would the architecture fail, and what would be a better approach?
 

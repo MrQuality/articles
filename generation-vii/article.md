@@ -46,6 +46,10 @@ Agents would query this model and propose structured changes. Source code would 
 
 This does not mean eliminating abstraction, modularity or readable representations. Machines also face context limits, search complexity and computational costs. Good abstractions remain useful; they simply need not be designed around human readability alone.
 
+People would author and inspect intent through behavioral scenarios, examples, contracts and diagrams linked to the underlying model. A reservation owner could specify that two successful reservations consume two units of capacity, inspect counterexamples and approve a proposed change to that requirement. Experience with the running system would produce versioned revisions of intent, including unresolved questions and conflicts. Specifications would evolve as users discover what they need.
+
+The connection between those views and the formal representations is another assurance obligation. An agent-generated explanation can misdescribe a specification. Reviews should expose the actual contract changes, their linked scenarios and the evidence supporting the translation into the model.
+
 ## 3. Governing what software is allowed to become
 
 Operating systems and security mechanisms govern what running programs may do. I would like to apply a similarly explicit discipline to what programs may become.
@@ -54,7 +58,7 @@ The authoritative state of an ACE-managed system includes its semantic model, ap
 
 Each transaction identifies what it changes, what it must preserve, the dependencies and assumptions on which it relies, the evidence required, and the authority that permits it.
 
-The platform should classify the change from its actual semantic effects, not trust an agent's label. Consider five illustrative classes:
+The platform needs an enforceable basis for deciding which obligations a change triggers. I would start with restricted, typed transaction formats and protected rules that derive obligations from the affected artifacts, interfaces and declared effects. Consider five illustrative classes.
 
 | Change class | Example | Required checks and authority |
 |---|---|---|
@@ -65,6 +69,10 @@ The platform should classify the change from its actual semantic effects, not tr
 | Governance | Change a mandatory security or verification rule | Separately protected policy authority, independent review or its authorized equivalent |
 
 A proposal can have several effects and must satisfy all applicable obligations. A performance optimization cannot silently become a change to business requirements. A schema migration cannot be treated like a stateless binary replacement.
+
+An agent could attach a certificate establishing a required property, following the principle of [proof-carrying code](https://doi.org/10.1145/263699.263712). The trusted side must determine the obligations and check the evidence against the exact candidate, specification and environment. A functional-equivalence result can leave timing, resource use or concurrent behavior outside its scope. The proposer cannot remove an obligation by omitting it from its submission.
+
+This approach depends on a deliberately restricted semantic domain. General behavioral equivalence is undecidable, and a certificate does not make every verification task inexpensive. [Alive2](https://doi.org/10.1145/3453483.3454030) illustrates a narrower mechanism for checking LLVM transformations for refinement, with bounded treatment of loops. Unsupported effects, insufficient evidence and exhausted verification budgets must lead to rejection, deferral or separately authorized review.
 
 I refer to the protected policy that defines these rules as the Computational Constitution. The term is not meant to suggest a new formalism. It describes a set of machine-enforced boundaries: which changes may be made, by whom, under what evidence requirements, and which rules ordinary implementation agents cannot modify.
 
@@ -115,9 +123,15 @@ This is a familiar lost-update problem, not a novel concurrency discovery. The e
 
 A correctly designed evolution controller should refuse to reuse that evidence in the combined state. It should recheck the affected obligations before authorization. If it cannot establish the relevant guarantee, it should reject or defer the change.
 
+The companion admission experiment now makes that decision executable within the same finite model. Its evidence records identify the model, invariant, implementation and worker count. It accepts the split operation with applicable single-worker evidence, rejects reuse of that evidence for two workers, and rejects the combined configuration again after exhaustive re-verification finds a violation. Scaling the atomic operation to two workers remains admissible. Additional checks reject evidence for a changed implementation, model identity or claim.
+
+The admission check consumes records returned by the local verifier. Authenticating evidence producers, deploying real workers and governing distributed updates remain prototype work. The animations below replay the recorded counterexample and the admission decisions.
+
 [Reproduce both experiments](experiments/README.md).
 
 Both experiments are small, executable illustrations. They do not demonstrate that the proposed platform exists, that the split implementation is faster, or that the approach scales. The code and recorded results accompany the article.
+
+[Play or step through the reservation counterexample](experiments/reservation-trace.html).
 
 ## 5. Assurance must evolve with the system
 
@@ -132,6 +146,12 @@ An assumption change should invalidate the applicability of dependent evidence, 
 I would treat this as an assurance dependency graph. Its purpose is to determine what must be reassessed when a change occurs and, when appropriate, restrict or suspend affected capabilities until the required assurance is restored. That response must be risk-dependent: abruptly shutting down an essential service can create a greater hazard than operating in a degraded mode.
 
 Incremental checking, counterexample reuse and dependency-aware caching could make this practical. But safe composition of evidence is a research problem in its own right. Two independently acceptable changes do not necessarily form an acceptable combination.
+
+I would organize evidence around component contracts using [assume-guarantee reasoning](https://www.cs.ucf.edu/~leavens/SAVCBS/2003/papers/full-papers/barringer-giannakopoulou-pasareanu.pdf). A component guarantees a property under explicit assumptions, and composition requires establishing that its environment satisfies those assumptions. An internal change that preserves the relevant contract may allow consumer evidence to remain applicable. Breaking a shared assumption requires reassessing every dependent claim. A genuinely global dependency can therefore still require extensive verification.
+
+The difficult work includes choosing useful boundaries, recording dependencies completely and applying sound composition rules when assumptions depend on other components. Broad invalidation is sometimes the correct outcome. Verification budgets and deployment policy must accommodate it.
+
+[Explore evidence applicability and admission decisions](experiments/assurance-graph.html).
 
 ## 6. What changes in AI and cloud infrastructure?
 
@@ -194,6 +214,8 @@ I would start with a constrained prototype, not a replacement for every programm
 **Finally, a production feedback loop.** Connect runtime telemetry to a budgeted synthesis queue. Allow controlled autonomous deployment for a narrow category of reversible, low-risk changes. Extend the permitted scope only as the evidence supports it. Compare the approach to a conventional agent-plus-CI pipeline on the same tasks, using the same verification and workload conditions.
 
 The research question is whether a shared evolution protocol can prevent invalid compositions and stale-evidence deployments while making useful engineering progress economically. That is a falsifiable question. A prototype may demonstrate that some aspects are impractical, that the assurance model is too expensive, or that the proposed integration adds little to existing tools. Those would be valuable results too.
+
+The comparison with adjacent work needs to be explicit. [Hickey's spec-first architecture](https://arxiv.org/abs/2611.02285) already proposes verification representations and semantic conflicts between teams, while [Di Santi's semantic-artifact proposal](https://arxiv.org/abs/2611.23249) treats specifications as persistent authority. ACE's proposed emphasis is a shared authorization protocol spanning implementation, infrastructure and the applicability of assurance evidence. Whether that integration adds a useful capability is part of the evaluation.
 
 ## 11. Where the vision reaches its limits
 
@@ -266,3 +288,5 @@ I am interested in constructive criticism, alternative designs and evidence that
 - [OpenGitOps Principles](https://github.com/open-gitops/documents/blob/main/PRINCIPLES.md).
 
 - [Formal Verification Under Evolution in Microservice-Based Systems: A Systematic Literature Review (2026)](https://doi.org/10.3390/software5030032).
+
+- Barringer, Giannakopoulou and Paşăreanu, [Proof Rules for Automated Compositional Verification through Learning (2003)](https://www.cs.ucf.edu/~leavens/SAVCBS/2003/papers/full-papers/barringer-giannakopoulou-pasareanu.pdf).

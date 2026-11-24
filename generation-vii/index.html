@@ -144,7 +144,7 @@
 <p>The admission check consumes records returned by the local verifier. Authenticating evidence producers, deploying real workers and governing distributed updates remain prototype work. The animations below replay the recorded counterexample and the admission decisions.</p>
 <p><a href="experiments/">Reproduce both experiments</a> or <a href="https://github.com/MrQuality/articles/tree/main/generation-vii/experiments">inspect the source and results on GitHub</a>.</p>
 <p>Both experiments are small, executable illustrations. They do not demonstrate that the proposed platform exists, that the split implementation is faster, or that the approach scales. The code and recorded results accompany the article.</p>
-<iframe class="trace-animation" src="experiments/reservation-trace.html" title="Animated reservation counterexample" loading="lazy"></iframe>
+<iframe class="trace-animation" src="experiments/reservation-trace.html?v=2" title="Animated reservation counterexample" loading="lazy"></iframe>
 <p><a href="experiments/reservation-trace.html">Open the reservation animation and complete static trace</a>.</p>
 <h2>5. Assurance must evolve with the system</h2>
 <p>Passing CI at one point in time does not mean a system remains acceptable indefinitely. Dependencies change, workload assumptions become obsolete, configurations drift and vulnerabilities are disclosed.</p>
@@ -155,7 +155,7 @@
 <p>Incremental checking, counterexample reuse and dependency-aware caching could make this practical. But safe composition of evidence is a research problem in its own right. Two independently acceptable changes do not necessarily form an acceptable combination.</p>
 <p>I would organize evidence around component contracts using <a href="https://www.cs.ucf.edu/~leavens/SAVCBS/2003/papers/full-papers/barringer-giannakopoulou-pasareanu.pdf">assume-guarantee reasoning</a>. A component guarantees a property under explicit assumptions, and composition requires establishing that its environment satisfies those assumptions. An internal change that preserves the relevant contract may allow consumer evidence to remain applicable. Breaking a shared assumption requires reassessing every dependent claim. A genuinely global dependency can therefore still require extensive verification.</p>
 <p>The difficult work includes choosing useful boundaries, recording dependencies completely and applying sound composition rules when assumptions depend on other components. Broad invalidation is sometimes the correct outcome. Verification budgets and deployment policy must accommodate it.</p>
-<iframe class="assurance-animation" src="experiments/assurance-graph.html" title="Animated assurance dependency graph" loading="lazy"></iframe>
+<iframe class="assurance-animation" src="experiments/assurance-graph.html?v=2" title="Animated assurance dependency graph" loading="lazy"></iframe>
 <p><a href="experiments/assurance-graph.html">Open the assurance animation and recorded decisions</a>.</p>
 <h2>6. What changes in AI and cloud infrastructure?</h2>
 <p>Today, much AI infrastructure is designed around model training, inference and agent execution. Autonomous engineering would add another class of workloads: large-scale candidate generation, compilation, theorem proving, simulation, fuzzing, fault injection, benchmarking and continuous evaluation.</p>

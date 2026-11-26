@@ -1,0 +1,26 @@
+{
+  "title": "Nir Rozen — Systems & Software",
+  "description": "Technical essays on systems, performance, and the engineering decisions behind reliable software.",
+  "url": "https://mrquality.github.io/articles",
+  "goatcounter_endpoint": "",
+  "giscus": {
+    "repo_id": "R_kgDOV6AA9g",
+    "category": "Announcements",
+    "category_id": "DIC_kwDOV6AA9s4DL_xj"
+  },
+  "publications": [
+    {
+      "slug": "generation-vii",
+      "title": "Generation VII",
+      "subtitle": "Autonomous Computational Engineering",
+      "description": "What if agents became the primary maintainers of software? A proposal for governing system changes, with two reproducible experiments.",
+      "published": "2026-11-24",
+      "topics": ["Software architecture", "Autonomous systems", "Verification"],
+      "source": "generation-vii/article.md",
+      "cover": "generation-vii/figures/00-cover.png",
+      "cover_alt": "Generation VII: Beyond AI-written code",
+      "experiments": "generation-vii/experiments/",
+      "type": "Technical essay"
+    }
+  ]
+}

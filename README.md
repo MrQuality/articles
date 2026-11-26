@@ -4,6 +4,7 @@ Technical essays on systems, performance, and the engineering decisions behind r
 
 | Article | Supporting material |
 | --- | --- |
+| [Introducing AndroGrid: Android Devices as Compute Workers](https://mrquality.github.io/articles/androgrid/) | [Markdown](androgrid/article.md) / [Measurements and notes](androgrid/evidence/) |
 | [Generation VII: Autonomous Computational Engineering](https://mrquality.github.io/articles/generation-vii/) | [Markdown](generation-vii/article.md) · [Experiments and results](generation-vii/experiments/) |
 
 GitHub Pages serves the generated static pages directly from the root of `main`. The shared layout, navigation, light/dark themes, article contents, RSS feed, and metadata are built from versioned sources.
@@ -36,3 +37,5 @@ GitHub Discussions can host article conversations without giving commenters perm
 ## Future paid publications
 
 The publication catalog can later link to public overviews of paid reference designs. Keep paid manuscripts, downloadable assets, credentials, and purchaser records outside this public repository. Access control and checkout belong to an authenticated delivery service; hiding a public static file is not access control. No payments or memberships are enabled today.
+
+Publications may set `evidence` to a companion directory containing `README.md`, and `local_assets` to use their own `style.css` and `site.js`.

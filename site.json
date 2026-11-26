@@ -10,12 +10,34 @@
   },
   "publications": [
     {
+      "slug": "androgrid",
+      "title": "Introducing AndroGrid",
+      "subtitle": "Android Devices as Compute Workers",
+      "description": "Why I am building an Android compute platform, where it could be useful, and what an HTTP experiment on 1 physical phone actually showed.",
+      "published": "2026-11-26",
+      "topics": [
+        "Distributed systems",
+        "Android",
+        "Performance testing"
+      ],
+      "source": "androgrid/article.md",
+      "cover": "androgrid/figures/00-cover.png",
+      "cover_alt": "AndroGrid: Android devices as compute workers, with a green and cyan network motif.",
+      "evidence": "androgrid/evidence",
+      "type": "Project introduction",
+      "local_assets": true
+    },
+    {
       "slug": "generation-vii",
       "title": "Generation VII",
       "subtitle": "Autonomous Computational Engineering",
       "description": "What if agents became the primary maintainers of software? A proposal for governing system changes, with two reproducible experiments.",
       "published": "2026-11-24",
-      "topics": ["Software architecture", "Autonomous systems", "Verification"],
+      "topics": [
+        "Software architecture",
+        "Autonomous systems",
+        "Verification"
+      ],
       "source": "generation-vii/article.md",
       "cover": "generation-vii/figures/00-cover.png",
       "cover_alt": "Generation VII: Beyond AI-written code",

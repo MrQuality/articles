@@ -11,7 +11,7 @@ from build import ROOT, build
 class Page(HTMLParser):
     def __init__(self, source):
         super().__init__()
-        self.ids, self.links, self.canonicals = set(), [], []
+        self.ids, self.links, self.canonicals, self.social_images = set(), [], [], []
         self.h1_count = 0
         self.feed(source)
 
@@ -28,6 +28,8 @@ class Page(HTMLParser):
             self.h1_count += 1
         if tag == "link" and attrs.get("rel") == "canonical":
             self.canonicals.append(attrs["href"])
+        if tag == "meta" and attrs.get("property") == "og:image":
+            self.social_images.append(attrs.get("content"))
 
 
 def check():
@@ -36,7 +38,10 @@ def check():
         actual = (ROOT / name).read_text(encoding="utf-8")
         if actual != expected:
             raise ValueError(f"Stale generated file: {name}; run python build.py")
-    paths = list(ROOT.glob("*.html")) + list((ROOT / "generation-vii").rglob("*.html"))
+    config = json.loads((ROOT / "site.json").read_text(encoding="utf-8"))
+    paths = list(ROOT.glob("*.html"))
+    for publication in config["publications"]:
+        paths.extend((ROOT / publication["slug"]).rglob("*.html"))
     pages = {path.resolve(): Page(path.read_text(encoding="utf-8")) for path in paths}
     for path, page in pages.items():
         if page.h1_count != 1:
@@ -66,6 +71,14 @@ def check():
     if set(links) != {f'{config["url"]}/{item["slug"]}/' for item in config["publications"]}:
         raise ValueError("RSS must contain every publication at its canonical URL")
     ET.parse(ROOT / "sitemap.xml")
+    for publication in config["publications"]:
+        article_page = pages[(ROOT / publication["slug"] / "index.html").resolve()]
+        expected_url = f'{config["url"]}/{publication["slug"]}/'
+        expected_image = f'{config["url"]}/{publication["cover"]}'
+        if article_page.canonicals != [expected_url] or article_page.social_images != [expected_image]:
+            raise ValueError(f'Incorrect canonical or sharing image: {publication["slug"]}')
+        if not (ROOT / publication["cover"]).is_file():
+            raise ValueError(f'Missing cover: {publication["slug"]}')
     print(f"Checked {len(pages)} HTML pages: internal files and anchors, canonical article URL, visuals, RSS, sitemap, and generated-source consistency.")
 
 

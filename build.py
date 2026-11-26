@@ -81,11 +81,11 @@ def build():
             raise ValueError("Expected the public HTTPS GoatCounter /count endpoint, never a secret API token")
         analytics = f'<script data-goatcounter="{escape(endpoint, quote=True)}" async src="https://gc.zgo.at/count.js"></script>'
 
-    def page(title, description, path, content, root="./", body_class="", extra_head=""):
+    def page(title, description, path, content, root="./", body_class="", extra_head="", cover=None, asset_root=None):
         return template("layout", title=escape(title), description=escape(description, quote=True),
-                        canonical=escape(f"{base}/{path}"), root=root, body_class=body_class,
+                        canonical=escape(f"{base}/{path}"), root=root, asset_root=root if asset_root is None else asset_root, body_class=body_class,
                         og_type="article" if body_class == "article-page" else "website",
-                        social_image=f"{base}/generation-vii/figures/00-cover.png",
+                        social_image=f"{base}/{cover or 'generation-vii/figures/00-cover.png'}",
                         content=content, extra_head=extra_head + analytics,
                         publications_current='aria-current="page"' if path == "" else "",
                         about_current='aria-current="page"' if path == "about.html" else "")
@@ -119,6 +119,8 @@ def build():
         resources = f'<a href="{escape(posixpath.relpath(entry["source"], slug), quote=True)}">Markdown source</a>'
         if entry.get("experiments"):
             resources = f'<a href="{escape(posixpath.relpath(entry["experiments"], slug), quote=True)}/">Experiments &amp; results</a>' + resources
+        if entry.get("evidence"):
+            resources = f'<a href="{escape(posixpath.relpath(entry["evidence"], slug), quote=True)}/">Measurements &amp; notes</a>' + resources
         if comments:
             resources += '<a href="#comments">Discussion</a>'
         content = template("article", type=escape(entry["type"]), article_title=escape(entry["title"]), subtitle=escape(entry["subtitle"]), deck=escape(deck), resources=resources,
@@ -127,7 +129,13 @@ def build():
                            toc="".join(f'<li><a href="#{anchor}">{escape(title)}</a></li>' for anchor, title in toc), article_body=body, comments=comments)
         structured = {"@context": "https://schema.org", "@type": "Article", "headline": full_title, "description": entry["description"], "author": {"@type": "Person", "name": "Nir Rozen", "url": f"{base}/about.html"}, "datePublished": entry["published"], "mainEntityOfPage": f"{base}/{slug}/", "image": f'{base}/{entry["cover"]}'}
         extra = f'<meta name="giscus:backlink" content="{base}/{slug}/">' + '<script type="application/ld+json">' + json.dumps(structured, ensure_ascii=False).replace("<", "\\u003c") + "</script>"
-        output[f"{slug}/index.html"] = page(f"{full_title} | Nir Rozen", entry["description"], f"{slug}/", content, "../", "article-page", extra)
+        output[f"{slug}/index.html"] = page(f"{full_title} | Nir Rozen", entry["description"], f"{slug}/", content, "../", "article-page", extra, cover=entry["cover"], asset_root="./" if entry.get("local_assets") else None)
+        if entry.get("evidence"):
+            evidence_dir = entry["evidence"].rstrip("/")
+            notes = (ROOT / evidence_dir / "README.md").read_text(encoding="utf-8")
+            notes_html = MarkdownIt("commonmark").render(notes)
+            evidence_content = '<main id="main" class="wrap"><header class="article-header"><a class="back-link" href="../">' + escape(entry["title"]) + '</a><p class="eyebrow">Companion material</p></header><article class="prose experiments-prose">' + notes_html + '</article></main>'
+            output[f"{evidence_dir}/index.html"] = page(f'Measurement notes | {entry["title"]}', "Recorded results, provenance, and limits of the AndroGrid HTTP demonstration.", f"{evidence_dir}/", evidence_content, "../../", "experiments-page", cover=entry["cover"], asset_root="../" if entry.get("local_assets") else None)
         entry = dict(entry, minutes=minutes, pretty_date=pretty_date, full_title=full_title)
         entries.append(entry)
 
@@ -140,7 +148,7 @@ def build():
   <h3><a href="{slug}/">{escape(entry['title'])}<span>{escape(entry['subtitle'])}</span></a></h3>
   <p class="publication-summary">{escape(entry['description'])}</p>
   <p class="publication-meta"><time datetime="{entry['published']}">{entry['pretty_date']}</time> · {entry['minutes']} min read</p>
-  <div class="publication-links"><a href="{slug}/">Read the essay</a>{experiment_link}</div></div>
+  <div class="publication-links"><a href="{slug}/">Read the article</a>{experiment_link}</div></div>
   <a class="publication-image" href="{slug}/" aria-label="Read {escape(entry['full_title'], quote=True)}"><img src="{escape(entry['cover'], quote=True)}" alt="{escape(entry['cover_alt'], quote=True)}" width="1920" height="1080" decoding="async"></a>
 </article>''')
     output["index.html"] = page(config["title"], config["description"], "", template("home", publications="\n".join(cards)), body_class="home-page")

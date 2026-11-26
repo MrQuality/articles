@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Measurement notes | Introducing AndroGrid</title>
+  <meta name="description" content="Recorded results, provenance, and limits of the AndroGrid HTTP demonstration.">
+  <link rel="canonical" href="https://mrquality.github.io/articles/androgrid/evidence/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Measurement notes | Introducing AndroGrid">
+  <meta property="og:description" content="Recorded results, provenance, and limits of the AndroGrid HTTP demonstration.">
+  <meta property="og:url" content="https://mrquality.github.io/articles/androgrid/evidence/">
+  <meta property="og:image" content="https://mrquality.github.io/articles/androgrid/figures/00-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="Nir Rozen — Publications" href="../../feed.xml">
+  <script>try{var t=localStorage.getItem('publication-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+  <link rel="stylesheet" href="../style.css?v=1">
+  <script src="../site.js?v=1" defer></script>
+
+</head>
+<body class="experiments-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="../../" aria-label="Nir Rozen, home">Nir Rozen<span>Systems &amp; software</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../../#publications" >Publications</a>
+      <a href="../../about.html" >About</a>
+      <button class="theme-toggle" type="button" hidden aria-label="Switch color theme"><span class="theme-icon" aria-hidden="true">◐</span><span class="theme-label">Theme</span></button>
+    </nav>
+  </header>
+  <main id="main" class="wrap"><header class="article-header"><a class="back-link" href="../">Introducing AndroGrid</a><p class="eyebrow">Companion material</p></header><article class="prose experiments-prose"><h1>Measurement notes</h1>
+<p>The HTTP run was recorded on 2026-11-25 using 1 physical Pixel 8. The worker snapshot reported client version 0.0.1-alpha.5, an unrooted device, and Android 17. This is a record of that experiment, not a certification of a particular published release package.</p>
+<p>The workload made sequential GET requests to a public HTTPS echo endpoint. The earlier submission included a concurrency variable that the inspected workload does not read. No request-concurrency claim is made.</p>
+<p>The operator's recorded setup describes USB reverse forwarding for cluster coordination and workload delivery, with Wi-Fi for outbound test requests. That description is not a packet capture. The dashboard's transport badge describes the Android route classification and does not prove the physical path of each connection.</p>
+<h2>Published data</h2>
+<ul>
+<li><a href="execution.txt">Sanitized execution-log excerpt</a>, preserving the original report's values.</li>
+<li><a href="windows-usb-lab.md">Windows USB lab setup</a>, with review references and commands.</li>
+<li><a href="../figures/03-workflow.gif">6-second illustrative workflow</a>, with a <a href="../figures/03-workflow-static.png">static alternative</a>.</li>
+</ul>
+<p>The phone screenshots in the walkthrough come from the retained experiment captures. The dashboard screenshot was captured later while it still held the completed task. They do not demonstrate a new run of the reader lab. Notification bars, worker identifiers, and task identifiers are masked; no enrollment QR or pairing token is published.</p>
+<p><a href="results.json">results.json</a> contains selected literal values from the workload's JSON report and the orchestrator's execution report. Node identifiers, task identifiers, exact event timestamps, enrollment material, and network configuration are excluded. No measurements were fabricated or generated to replace the original observations.</p>
+<p>The workload's measurement window is 15.151075 seconds. The orchestrator reported 15,656 milliseconds for task execution. These are separate timing boundaries. Submission and scheduling latency were not measured as an end-to-end interval here.</p>
+<p>The dashboard capture taken for this article shows the retained completed task. It is not evidence of an additional benchmark run. Published screenshot identifiers are redacted. The JSON file preserves numeric values directly from the original reports.</p>
+<h2>Provenance and reproduction</h2>
+<p>The original report was retained by the author. The selected fields in <a href="results.json">results.json</a> were extracted from that report, with identifiers and the target URL omitted. No new benchmark was run for this article. Neither a backend commit nor an APK or workload hash was recorded with the run, so the installed binaries cannot be reconstructed exactly from this package.</p>
+<p>The implementation was checked against backend commit <code>53ab5e51c581358acf822cf2c651d192b6363a4b</code> and Android commit <code>e897036d91903df3dae1d821d05ad9d6846d7f31</code> on 2026-11-26. These are review references, not asserted build identities for the experiment. The <a href="https://github.com/ligature-platform/androgrid-backend/blob/53ab5e51c581358acf822cf2c651d192b6363a4b/workloads/http-benchmark/src/config.rs">HTTP configuration parser</a> and <a href="https://github.com/ligature-platform/androgrid-backend/blob/53ab5e51c581358acf822cf2c651d192b6363a4b/workloads/http-benchmark/src/engine.rs">request loop</a> establish the sequential request model in the reviewed implementation.</p>
+<h2>Limits</h2>
+<p>The experiment contains 76 requests from 1 phone. It does not establish maximum throughput, multi-device scaling, wireless enrollment, cellular energy behavior, memory-leak freedom, sustained thermal behavior, or a comparative cost/performance advantage. Latency percentiles describe this small sample only; no cause is assigned to outliers.</p>
+<p>For a repeatable performance comparison, record the exact backend/APK/workload identities and hashes, use a controlled target with permission, repeat runs, and preserve workload inputs and outputs. Verify returned output against an independent expectation. Keep originals outside the public publication package when they contain credentials or device identifiers.</p>
+<h2>Source and further reading</h2>
+<ul>
+<li><a href="https://github.com/ligature-platform/androgrid-backend/tree/main/workloads/http-benchmark">HTTP workload source</a></li>
+<li><a href="https://ligature-platform.github.io/androgrid-backend/">Project documentation</a></li>
+<li><a href="../">Article</a></li>
+</ul>
+<p>Documentation and source on the default branch can evolve after this article. Reproduction needs a compatible selected build and its current instructions.</p>
+</article></main>
+  <footer class="site-footer wrap">
+    <p>Independent writing by <a href="../../about.html">Nir Rozen</a>.</p>
+    <nav aria-label="Footer"><a href="https://github.com/MrQuality">GitHub</a><a href="../../feed.xml">RSS feed</a><a href="../../#publications">Publications</a></nav>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="650" viewBox="0 0 1080 650" role="img" aria-labelledby="title desc">
+<title id="title">AndroGrid coordination and execution</title>
+<desc id="desc">Operator tools submit work to the Rust control plane. Android workers initiate connections to obtain tasks and report results. The architecture can coordinate multiple workers; the published demonstration used 1 phone.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="#80cbb5" stroke-width="1.5"/></marker></defs>
+<rect width="1080" height="650" rx="16" fill="#1b2529"/>
+<g font-family="Segoe UI,Arial,sans-serif" fill="#f2f6f3">
+<text x="44" y="52" font-size="15" letter-spacing="2" fill="#83cdb8">ANDROGRID / ARCHITECTURE</text>
+<text x="44" y="98" font-size="32" font-weight="600">Work runs on the Android device.</text>
+<text x="44" y="132" font-size="19" fill="#b3c5c0">The control plane coordinates delivery, execution reports, and worker state.</text>
+<g fill="#25343a" stroke="#50665f"><rect x="44" y="224" width="206" height="236" rx="10"/><rect x="336" y="202" width="316" height="280" rx="10"/><rect x="774" y="190" width="262" height="170" rx="10"/><rect x="774" y="392" width="262" height="136" rx="10" stroke-dasharray="6 5"/></g>
+<text x="66" y="262" font-size="22" font-weight="600">Operator tools</text>
+<text x="66" y="310" font-size="19">CLI</text><text x="66" y="343" font-size="19">Web dashboard</text>
+<text x="66" y="408" font-size="17" fill="#b3c5c0">Submit / observe</text>
+<text x="360" y="244" font-size="25" font-weight="600">Control plane</text>
+<text x="360" y="277" font-size="18" fill="#8ee5c1">Rust / Tokio / Tonic</text>
+<path d="M360 301H628" stroke="#50665f"/>
+<text x="360" y="340" font-size="19">Scheduling and task state</text>
+<text x="360" y="377" font-size="19">Workload artifacts</text>
+<text x="360" y="414" font-size="19">Result collection</text>
+<text x="798" y="228" font-size="22" font-weight="600">Android worker</text>
+<text x="798" y="260" font-size="18" fill="#8ee5c1">Kotlin / Chicory</text>
+<text x="798" y="296" font-size="19">WASI workload</text>
+<text x="798" y="330" font-size="17" fill="#b3c5c0">Executes on the phone</text>
+<text x="798" y="434" font-size="22" font-weight="600">Additional workers</text>
+<text x="798" y="468" font-size="17" fill="#b3c5c0">Architecture capability</text>
+<text x="798" y="498" font-size="17" fill="#b3c5c0">Not measured in this run</text>
+<g stroke="#80cbb5" stroke-width="2" fill="none" marker-end="url(#arrow)"><path d="M260 340H324"/><path d="M762 272H664"/><path d="M664 320H762"/><path d="M762 452H664"/></g>
+<text x="714" y="211" text-anchor="middle" font-size="15" fill="#b3c5c0">Worker-initiated</text>
+<text x="714" y="235" text-anchor="middle" font-size="15" fill="#b3c5c0">connections</text>
+<path d="M44 565H1036" stroke="#50665f"/>
+<text x="44" y="599" font-size="18" fill="#b3c5c0">Recorded demonstration: 1 physical phone. Network requests use a separate egress path.</text>
+</g></svg>

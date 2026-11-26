@@ -1,0 +1,15 @@
+<main id="main" class="wrap">
+  <header class="article-header">
+    <a class="back-link" href="../#publications">All publications</a>
+    <p class="eyebrow">{{type}} <span aria-hidden="true">/</span> Free to read</p>
+    <h1>{{article_title}}<span>{{subtitle}}</span></h1>
+    <p class="article-deck">{{deck}}</p>
+    <div class="article-meta"><a href="../about.html">Nir Rozen</a><span aria-hidden="true">·</span><time datetime="{{published}}">{{date}}</time><span aria-hidden="true">·</span><span>{{minutes}} min read</span></div>
+    <ul class="topic-list" aria-label="Topics">{{topics}}</ul>
+    <nav class="article-resources" aria-label="Article resources">{{resources}}<a href="https://github.com/MrQuality/articles/tree/main/{{slug}}">Files on GitHub</a><button class="copy-link" type="button" hidden>Copy article link</button><span class="copy-status" role="status"></span></nav>
+  </header>
+  <div class="reading-layout">
+    <aside class="contents-panel"><details open><summary>In this article</summary><nav aria-label="Table of contents"><ol>{{toc}}</ol></nav></details></aside>
+    <div class="reading-column"><article class="prose">{{article_body}}</article>{{comments}}<div class="article-end"><a href="#main">Back to top</a><a href="../#publications">All publications</a></div></div>
+  </div>
+</main>

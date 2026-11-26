@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="canonical" href="{{canonical}}">
+  <meta property="og:type" content="{{og_type}}">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="og:image" content="{{social_image}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="Nir Rozen — Publications" href="{{root}}feed.xml">
+  <script>try{var t=localStorage.getItem('publication-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+  <link rel="stylesheet" href="{{root}}style.css?v=1">
+  <script src="{{root}}site.js?v=1" defer></script>
+  {{extra_head}}
+</head>
+<body class="{{body_class}}">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="{{root}}" aria-label="Nir Rozen, home">Nir Rozen<span>Systems &amp; software</span></a>
+    <nav aria-label="Main navigation">
+      <a href="{{root}}#publications" {{publications_current}}>Publications</a>
+      <a href="{{root}}about.html" {{about_current}}>About</a>
+      <button class="theme-toggle" type="button" hidden aria-label="Switch color theme"><span class="theme-icon" aria-hidden="true">◐</span><span class="theme-label">Theme</span></button>
+    </nav>
+  </header>
+  {{content}}
+  <footer class="site-footer wrap">
+    <p>Independent writing by <a href="{{root}}about.html">Nir Rozen</a>.</p>
+    <nav aria-label="Footer"><a href="https://github.com/MrQuality">GitHub</a><a href="{{root}}feed.xml">RSS feed</a><a href="{{root}}#publications">Publications</a></nav>
+  </footer>
+</body>
+</html>

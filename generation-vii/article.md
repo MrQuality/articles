@@ -127,11 +127,13 @@ The companion admission experiment now makes that decision executable within the
 
 The admission check consumes records returned by the local verifier. Authenticating evidence producers, deploying real workers and governing distributed updates remain prototype work. The animations below replay the recorded counterexample and the admission decisions.
 
-[Reproduce both experiments](experiments/README.md).
+[Reproduce both experiments](experiments/) or [inspect the source and results on GitHub](https://github.com/MrQuality/articles/tree/main/generation-vii/experiments).
 
 Both experiments are small, executable illustrations. They do not demonstrate that the proposed platform exists, that the split implementation is faster, or that the approach scales. The code and recorded results accompany the article.
 
-[Play or step through the reservation counterexample](experiments/reservation-trace.html).
+<iframe class="trace-animation" src="experiments/reservation-trace.html?v=2" title="Animated reservation counterexample" loading="lazy"></iframe>
+
+[Open the reservation animation and complete static trace](experiments/reservation-trace.html).
 
 ## 5. Assurance must evolve with the system
 
@@ -151,7 +153,9 @@ I would organize evidence around component contracts using [assume-guarantee rea
 
 The difficult work includes choosing useful boundaries, recording dependencies completely and applying sound composition rules when assumptions depend on other components. Broad invalidation is sometimes the correct outcome. Verification budgets and deployment policy must accommodate it.
 
-[Explore evidence applicability and admission decisions](experiments/assurance-graph.html).
+<iframe class="assurance-animation" src="experiments/assurance-graph.html?v=2" title="Animated assurance dependency graph" loading="lazy"></iframe>
+
+[Open the assurance animation and recorded decisions](experiments/assurance-graph.html).
 
 ## 6. What changes in AI and cloud infrastructure?
 
@@ -161,13 +165,20 @@ These have very different resource requirements. GPUs or other accelerators may 
 
 An ACE control plane would therefore need a heterogeneous job scheduler, durable task execution, isolated ephemeral environments, content-addressed artifact and evidence storage, and explicit compute budgets. It should reserve verification capacity so a flood of generated candidates cannot starve the mechanisms that assess them. Shared caches must be keyed by relevant inputs and trust boundaries, not simply by the candidate's name.
 
-| Workload | Resource and execution needs |
-| --- | --- |
-| Generation | Accelerators and CPU for model inference and candidate search |
-| Verification | CPU and memory for solvers, builds and fuzzing |
-| Evaluation | Isolated, representative environments for replay, fault injection and benchmarks |
+<figure aria-label="Proposed allocation of engineering workloads" class="explanation" data-section-visual="6">
+<div class="visual-node highlight"><strong>Budgeted workload scheduler</strong>Assign jobs by resource needs and assurance policy.</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-grid three">
+<div class="visual-node"><strong>Generation</strong>Model inference and candidate search<br/><span class="visual-label">Accelerators and CPU</span></div>
+<div class="visual-node"><strong>Verification</strong>Solvers, builds and fuzzing<br/><span class="visual-label">CPU and memory</span></div>
+<div class="visual-node"><strong>Evaluation</strong>Replay, fault injection and benchmarks<br/><span class="visual-label">Isolated, representative environments</span></div>
+</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-node"><strong>Versioned artifacts and evidence</strong>Bind outputs to the candidate, assumptions, environment and toolchain.</div>
+<div class="visual-reserve"><strong>Reserved verification capacity</strong>Candidate generation must leave enough capacity to assess proposed changes.</div>
+<figcaption>Proposed workload allocation. Scheduling must preserve the isolation and trust requirements of each job.</figcaption>
+</figure>
 
-*A budgeted scheduler reserves verification capacity. Versioned outputs remain bound to the candidate, assumptions, environment and toolchain.*
 
 There is already work on durable distributed agent runtimes and hardware-isolated agent execution ([Google Cloud’s distributed agent runtime](https://cloud.google.com/blog/products/ai-machine-learning/agent-executor-googles-distributed-agent-runtime)). Existing Kubernetes infrastructure, microVMs, WebAssembly sandboxes, remote build systems and observability tools are plausible building blocks. The challenge is to arrange them around engineering obligations rather than model throughput alone.
 
@@ -185,14 +196,17 @@ I would design the engineering control plane so generation workers cannot access
 
 Candidate execution should be isolated from trusted verification and release infrastructure. Independent verifiers must bind their evidence to the exact candidate, specification, environment and toolchain. A protected deployment authority must validate signatures, current policy, revocation status and the intended execution target. A valid signature establishes provenance under a trust model; it does not establish correctness.
 
-| Boundary | Responsibility |
-| --- | --- |
-| Untrusted proposal workers | Generate and trial candidates with scoped capabilities and isolated execution |
-| Protected verification | Assess independently defined obligations and bind evidence to the candidate and assumptions |
-| Protected deployment authority | Check policy, applicable evidence, signatures, revocation and target |
-| Production | Run the authorized artifact and configuration |
+<figure aria-label="Proposed trust boundaries from candidate generation to production" class="explanation" data-section-visual="7">
+<div class="visual-node"><div class="visual-label">Untrusted proposal workers</div><strong>Generate and trial a candidate</strong>Scoped capabilities and isolated execution.</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-node highlight"><div class="visual-label">Protected verification boundary</div><strong>Assess independently defined obligations</strong>Produce evidence bound to the candidate and its operating assumptions.</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-node highlight"><div class="visual-label">Protected deployment authority</div><strong>Authorize the exact release</strong>Check policy, evidence applicability, signatures, revocation and target.</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-node"><strong>Production</strong>Run the authorized artifact and configuration.</div>
+<figcaption>Each downward handoff requires validation by the receiving authority. Generation workers hold no production credentials or release-signing authority.</figcaption>
+</figure>
 
-*Each handoff requires validation by the receiving authority. Generation workers hold no production credentials or release-signing authority.*
 
 There are additional challenges. An agent might overfit a benchmark, weaken a test or exploit a gap in a verifier. A compromised dependency could invalidate earlier assumptions. A malicious agent might deliberately exhaust verification resources. An old but properly signed artifact might no longer be safe to deploy. These scenarios require protected evaluations, evidence freshness rules, replay protection, admission checks and incident recovery.
 
@@ -210,19 +224,22 @@ I would measure success by verified improvements per unit of engineering cost, e
 
 Optimization needs a stopping condition. Sometimes the correct decision is to retain the current implementation. A system that continuously changes software is not necessarily better than one that knows when to leave it alone.
 
-| Decision input | Question |
-| --- | --- |
-| Full cost | What do inference, verification, evaluation, rollout and recovery cost? |
-| Expected benefit | What improvement is measured against the same strong baseline? |
-| Required assurance | Are the evidence, risk and authority acceptable under policy? |
-
-| Outcome | Response |
-| --- | --- |
-| Justified within budget and policy | Proceed through authorization and controlled rollout |
-| Unjustified | Retain the current implementation |
-| Uncertain | Gather further evidence within budget or defer |
-
-*Economic benefit must satisfy the governing assurance requirements.*
+<figure aria-label="Proposed decision for whether to pursue and authorize an optimization" class="explanation" data-section-visual="8">
+<div class="visual-grid three">
+<div class="visual-node"><strong>Full cost</strong>Inference, verification, evaluation, rollout and recovery.</div>
+<div class="visual-node"><strong>Expected benefit</strong>Measured improvement over the same strong baseline.</div>
+<div class="visual-node"><strong>Required assurance</strong>Applicable evidence, permitted risk and authority.</div>
+</div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-node highlight"><strong>Is the change justified within its budget and assurance policy?</strong></div>
+<div aria-hidden="true" class="visual-connector">↓</div>
+<div class="visual-grid three">
+<div class="visual-node"><strong>Yes</strong>Proceed through authorization and controlled rollout.</div>
+<div class="visual-node"><strong>No</strong>Retain the current implementation.</div>
+<div class="visual-node caution"><strong>Uncertain</strong>Gather further evidence within budget or defer.</div>
+</div>
+<figcaption>Proposed decision criteria. Economic benefit must satisfy the governing assurance requirements.</figcaption>
+</figure>
 
 ## 9. Can the engineering platform improve itself?
 
@@ -232,12 +249,14 @@ That introduces a recursive trust problem. If the platform can change the mechan
 
 I would keep a deliberately small trusted computing base: policy enforcement, artifact identity, critical validation and admission mechanisms, together with their dependencies. Ordinary agents could propose changes to those components, but a separately authorized process would decide whether to accept them. Its evidence requirements must be anchored outside the authority of the proposing agent. A replacement verifier should be evaluated against the previously authorized trust criteria, not criteria it has written for itself.
 
-| Proposed change | Approval path |
-| --- | --- |
-| Implementation within delegated scope | Implementation authority assesses it under the delegated change policy |
-| Verifier or governing policy | A separately authorized process assesses it against previously authorized trust criteria |
+<figure aria-label="Proposed authority for ordinary changes and trust mechanism changes" class="explanation" data-section-visual="9">
+<div class="visual-grid two">
+<div class="visual-node"><strong>Implementation proposal</strong>Assessed under the delegated change policy.<div aria-hidden="true" class="visual-connector">↓</div><strong>Implementation authority</strong>May approve changes within its permitted scope.</div>
+<div class="visual-node highlight"><strong>Verifier or policy proposal</strong>Assessed against previously authorized trust criteria.<div aria-hidden="true" class="visual-connector">↓</div><strong>Separately authorized process</strong>Decides whether the trust mechanism may change.</div>
+</div>
+<figcaption>Agents may propose changes to either layer. Authority to approve a change to the trust mechanism must be anchored outside the proposing agent.</figcaption>
+</figure>
 
-*Agents may propose changes to either layer. Authority to approve changes to the trust mechanism must be anchored outside the proposing agent.*
 
 This does not require every engineering decision to involve a human. It requires independent authority. Human intervention may be reserved for intent changes, unresolved risk, conflicting requirements and exceptional decisions, according to policy. Autonomy should be an engineering property with explicit limits, rather than a claim that no human ever needs to be involved.
 
@@ -245,13 +264,15 @@ This does not require every engineering decision to involve a human. It requires
 
 I would start with a constrained prototype, not a replacement for every programming language.
 
-| Prototype stage | Evaluation question |
-| --- | --- |
-| Semantic transaction engine | Can it admit a change with applicable evidence? |
-| Cross-layer evolution | Can it reject stale evidence, incompatible combinations and unsafe migrations? |
-| Production feedback loop | Does it improve outcomes over a strong agent-plus-CI baseline? |
+<figure aria-label="Three proposed prototype stages and their evaluation questions" class="explanation" data-section-visual="10">
+<ol class="visual-steps">
+<li><strong>Semantic transaction engine</strong><div><span class="deliverable">Restricted IR, artifact identity, policy checks and isolated candidates.</span><span class="question">Can the prototype admit a change with applicable evidence?</span></div></li>
+<li><strong>Cross-layer evolution</strong><div><span class="deliverable">Stateful changes, environmental assumptions and evidence dependencies.</span><span class="question">Can it reject stale evidence, incompatible combinations and unsafe migrations?</span></div></li>
+<li><strong>Production feedback loop</strong><div><span class="deliverable">Budgeted search and controlled rollout for reversible, low-risk changes.</span><span class="question">Does it improve outcomes over a strong agent-plus-CI baseline?</span></div></li>
+</ol>
+<figcaption>Proposed progression. Each stage needs evidence that justifies expanding the permitted scope.</figcaption>
+</figure>
 
-*Each stage needs evidence that justifies expanding the permitted scope.*
 
 **First, a small semantic transaction engine.** Use a Rust control plane, a restricted typed IR, a content-addressed artifact store, a durable revision database and a policy checker. An untrusted generator proposes implementation changes. Z3 or cvc5 checks bounded or decidable obligations, and a sandbox executes admissible candidates. Syntax-guided synthesis and proof-carrying code provide useful foundations ([Syntax-guided synthesis](https://www.microsoft.com/en-us/research/publication/syntax-guided-synthesis/), [Proof-carrying code](https://doi.org/10.1145/263699.263712)). Translation validation can address some gaps between the verified representation and compiled artifact ([Alive2 translation validation](https://doi.org/10.1145/3453483.3454030)).
 
@@ -273,13 +294,15 @@ I do not expect every class of software to adopt the same level of autonomy. A d
 
 A mature platform should be able to express that a property is unknown, that evidence is insufficient, or that an optimization is not worth its cost. It should be allowed to stop.
 
-| What the platform encounters | Possible policy response |
-| --- | --- |
-| A property remains unknown | Expose the uncertainty and seek authorized review |
-| Applicable evidence is insufficient | Reject or defer the proposed change |
-| The optimization is not worth its cost | Retain the current implementation |
-
-*Explicit uncertainty, deferral and stopping are outcomes the architecture must support.*
+<figure aria-label="Limits the proposed platform should surface and possible policy responses" class="explanation" data-section-visual="11">
+<table><thead><tr><th scope="col">What the platform encounters</th><th scope="col">Possible policy response</th></tr></thead>
+<tbody>
+<tr><td>A property remains unknown</td><td>Expose the uncertainty and seek authorized review.</td></tr>
+<tr><td>Applicable evidence is insufficient</td><td>Reject or defer the proposed change.</td></tr>
+<tr><td>The optimization is not worth its cost</td><td>Retain the current implementation.</td></tr>
+</tbody></table>
+<figcaption>Explicit uncertainty, deferral and stopping are outcomes the architecture must support.</figcaption>
+</figure>
 
 ## Closing thoughts
 

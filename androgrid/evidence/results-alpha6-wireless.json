@@ -1,0 +1,57 @@
+{
+  "description": "Selected literal values from 1 recorded HTTP workload executed on physical hardware over 100% wireless Wi-Fi LAN with zero USB reverse tunnels. Identifiers and target URL omitted.",
+  "recorded_date": "2026-11-28",
+  "device": {
+    "model": "Google Pixel 8",
+    "is_rooted": false,
+    "os_version": "17",
+    "abi": "arm64-v8a",
+    "client_version": "0.0.1-alpha.6",
+    "battery_level_pct": 32,
+    "is_charging": true,
+    "transport": "Wi-Fi LAN"
+  },
+  "request_model": "sequential",
+  "workload_report": {
+    "method": "GET",
+    "duration_secs": 15.014204,
+    "total_requests": 79,
+    "successful_requests": 79,
+    "requests_per_sec": 5.26168420250584,
+    "total_bytes_transferred": 26465,
+    "bytes_per_sec": 1762.6642078394566,
+    "status_codes": {
+      "200": 79
+    },
+    "errors": {
+      "io_failure": 0,
+      "security_violation": 0,
+      "buffer_too_small": 0,
+      "quota_exceeded": 0,
+      "other_errors": 0
+    },
+    "latency_percentiles": {
+      "min_ms": 169.866,
+      "p50_ms": 174.005,
+      "p90_ms": 176.8962,
+      "p95_ms": 177.5387,
+      "p99_ms": 501.4358,
+      "max_ms": 853.722,
+      "mean_ms": 185.5923
+    }
+  },
+  "execution_report": {
+    "state": "COMPLETED",
+    "engine": "WasmWasi",
+    "run_attempt": 1,
+    "timeout_seconds": 30,
+    "exit_code": 0,
+    "execution_duration_ms": 15197
+  },
+  "provenance": {
+    "qualification_gate": "Gate L-02",
+    "target_issue": "Issue #30",
+    "reverse_tunnels_active": 0,
+    "notes": "Verified on physical Google Pixel 8 over physical Wi-Fi LAN (SSID Rozenteam5). Zero adb reverse tunnels active throughout enrollment and execution."
+  }
+}

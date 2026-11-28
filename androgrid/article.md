@@ -111,6 +111,10 @@ Direct Wi-Fi connectivity between the Android worker and the orchestrator was re
 
 This run therefore does not validate fully wireless onboarding or cellular operation. The network-path description comes from the recorded setup; the dashboard's Wi-Fi label alone does not establish the route of a particular connection.
 
+> **Update (2026-11-28): 100% True Wireless Onboarding (v0.0.1-alpha.6)**  
+> Following this initial benchmark, we investigated the underlying network transport asymmetry (Issue #30). Root-cause analysis confirmed that the host smart firewall dropped inbound connections on port 50051 across default adapter profiles, while multi-homed virtual adapters interfered with mDNS interface binding.  
+> In release **v0.0.1-alpha.6**, we resolved this with an automated host firewall helper (`setup-firewall.ps1`), direct routing probes (`detect_outbound_lan_ipv4`), a durable `redb` transactional admission store (ADR-028), and an Android non-blocking reachability prober with manual fallback. The physical Google Pixel 8 achieved 100% wireless onboarding, certificate enrollment, and benchmark execution (79 requests, 0 errors, 100% success) over physical Wi-Fi LAN with **zero active USB reverse tunnels** (`adb reverse --list` empty). See the updated [measurement notes](evidence/) for details.
+
 ### What the run reported
 
 | Measurement | Recorded value |

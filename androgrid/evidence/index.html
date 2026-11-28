@@ -37,6 +37,7 @@
 <ul>
 <li><a href="execution.txt">Sanitized execution-log excerpt</a>, preserving the original report's values.</li>
 <li><a href="windows-usb-lab.md">Windows USB lab setup</a>, with review references and commands.</li>
+<li><a href="results-alpha6-wireless.json">Alpha.6 wireless benchmark results</a>, documenting the subsequent 100% wireless onboarding run.</li>
 <li><a href="../figures/03-workflow.gif">6-second illustrative workflow</a>, with a <a href="../figures/03-workflow-static.png">static alternative</a>.</li>
 </ul>
 <p>The phone screenshots in the walkthrough come from the retained experiment captures. The dashboard screenshot was captured later while it still held the completed task. They do not demonstrate a new run of the reader lab. Notification bars, worker identifiers, and task identifiers are masked; no enrollment QR or pairing token is published.</p>
@@ -48,6 +49,8 @@
 <p>The implementation was checked against backend commit <code>53ab5e51c581358acf822cf2c651d192b6363a4b</code> and Android commit <code>e897036d91903df3dae1d821d05ad9d6846d7f31</code> on 2026-11-26. These are review references, not asserted build identities for the experiment. The <a href="https://github.com/ligature-platform/androgrid-backend/blob/53ab5e51c581358acf822cf2c651d192b6363a4b/workloads/http-benchmark/src/config.rs">HTTP configuration parser</a> and <a href="https://github.com/ligature-platform/androgrid-backend/blob/53ab5e51c581358acf822cf2c651d192b6363a4b/workloads/http-benchmark/src/engine.rs">request loop</a> establish the sequential request model in the reviewed implementation.</p>
 <h2>Limits</h2>
 <p>The experiment contains 76 requests from 1 phone. It does not establish maximum throughput, multi-device scaling, wireless enrollment, cellular energy behavior, memory-leak freedom, sustained thermal behavior, or a comparative cost/performance advantage. Latency percentiles describe this small sample only; no cause is assigned to outliers.</p>
+<h3>Subsequent validation: 100% wireless onboarding in v0.0.1-alpha.6</h3>
+<p>On 2026-11-28, the wireless onboarding and reverse-tunnel limitation was investigated and resolved (Issue #30, Gate L-02). Validation on the same physical Google Pixel 8 running <code>v0.0.1-alpha.6</code> demonstrated 100% wireless onboarding, certificate enrollment, artifact fetching, and benchmark execution (79 requests, 0 errors, 100% success rate, 5.26 req/s) over physical Wi-Fi LAN with zero active USB reverse tunnels (<code>adb reverse --list</code> verified empty). See <a href="results-alpha6-wireless.json">results-alpha6-wireless.json</a> for the sanitized run data.</p>
 <p>For a repeatable performance comparison, record the exact backend/APK/workload identities and hashes, use a controlled target with permission, repeat runs, and preserve workload inputs and outputs. Verify returned output against an independent expectation. Keep originals outside the public publication package when they contain credentials or device identifiers.</p>
 <h2>Source and further reading</h2>
 <ul>
